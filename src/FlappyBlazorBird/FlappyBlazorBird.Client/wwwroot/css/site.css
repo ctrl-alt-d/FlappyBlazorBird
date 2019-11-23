@@ -1,0 +1,32 @@
+
+
+html, body {
+    margin: 0;
+    border: 0;
+    padding: 0;
+    background-color: black;
+}
+
+.zero {
+    border: 0; padding: 0; margin: 0;
+}
+
+.outer-div {
+    display: flex;
+    flex-flow: column;
+    height: 100vh;
+} 
+
+.row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;    
+    flex: 1;
+}
+
+.col {
+    flex-basis: 100%;
+    flex: 1;
+    z-index: 10;
+    background-color: black;
+}
