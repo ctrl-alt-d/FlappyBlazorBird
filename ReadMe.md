@@ -4,6 +4,6 @@ Flappy Blazor Bird is (a portion) of https://github.com/sourabhv/FlapPyBird tran
 
 This is just a lab.
 
-![screenshot](./screenshots/gameover.gif)
+![screenshot](./screenshots/gameover.png)
 
 
