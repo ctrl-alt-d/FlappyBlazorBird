@@ -1,17 +1,15 @@
 ﻿@inherits IndexBase
 
 @page "/"
-<div class="outer-div" @ref="OuterDiv" @onkeydown="@KeyDown" tabindex="0">         
+<div class="outer-div" @ref="OuterDiv" @onkeydown="@KeyDown" tabindex="0" @onclick="@OnClick" >         
     <div class="row">
-        <div style="order:2;@Universe.DivStyle" class="col">
+        <div class="col" style="order:1;@Universe.DivStyle">
             @foreach (var printable in Universe.ToRender)
             {
                 <img src="@printable.Image" style="@printable.CssStyle" class="zero"/>    
             }    
         </div>
-        <div class="col" style="order:1">
-        </div>
-        <div class="col" style="order:3"></div>
+        <div class="col" style="order:2"></div>
     </div>        
     <div class="row">
         <div class="col"></div>

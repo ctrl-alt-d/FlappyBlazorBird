@@ -3,25 +3,17 @@
 
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width; initial-scal=1" />
     <title>FlappyBlazorBird</title>
-    <base href="/FlappyBlazorBird/" />
-    <!--base href="/FlappyBlazorBird/" /-->
+    <base href="/" />
     <link href="css/site.css" rel="stylesheet" />
 </head>
 
-<body>
-    <app>Loading...</app>
-
-    <div id="blazor-error-ui">
-        An unhandled error has occurred.
-        <a href="" class="reload">Reload</a>
-        <a class="dismiss">🗙</a>
-    </div>
+<body style="border:0; padding: 0; margin: 0; overflow: hidden;">
+    <app><span style="color:green">Loading...</span></app>
     <script src="_framework/blazor.webassembly.js"></script>
     <script>
         window.SetFocusToElement = (element) => {
-            console.log("xxx");
             element.focus();
         };
     </script>

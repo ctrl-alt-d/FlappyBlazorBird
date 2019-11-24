@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Components.Web;
 using System.Threading.Tasks;
 using Microsoft.JSInterop;
 
+// THIS CODE IS "DIRECT TRANSLATION" FROM PYTHON PYGAME TO C# BLAZOR. REFACTOR PENDING
+
 namespace FlappyBlazorBird.Client.Pages
 {
 
@@ -21,6 +23,13 @@ namespace FlappyBlazorBird.Client.Pages
         {
             KeyPressed.Enqueue(e);
         }
+        protected void OnClick()
+        {
+            var e = new KeyboardEventArgs();
+            e.Key = IsDead?"p":"ArrowUp";
+            KeyPressed.Enqueue(e);
+        }
+
         protected ElementReference OuterDiv;
 
         protected bool IsDead = false;
@@ -54,38 +63,7 @@ namespace FlappyBlazorBird.Client.Pages
             var basex = 0;
             var baseShift = Universe.GetBaseWidth - Universe.GetBackgroundWidth;
 
-            var newPipe1 = getRandomPipe();
-            var newPipe2 = getRandomPipe();
-
-            // list of upper pipes
-            var upperPipes = new List<Dictionary<string,int>>()
-            {
-                new Dictionary<string,int>() 
-                {
-                    ["x"] = Universe.SCREENWIDTH + 200, 
-                    ["y"] = newPipe1[0]["y"] 
-                },  
-                new Dictionary<string,int>() 
-                {
-                    ["x"] = Universe.SCREENWIDTH + 200 + (Universe.SCREENWIDTH / 2), 
-                    ["y"] = newPipe2[0]["y"] 
-                }, 
-            };
-
-            // list of lowerpipe
-            var lowerPipes = new List<Dictionary<string,int>>()
-            {
-                new Dictionary<string,int>() 
-                {
-                    ["x"] = Universe.SCREENWIDTH + 200, 
-                    ["y"] = newPipe1[1]["y"] 
-                },  
-                new Dictionary<string,int>() 
-                {
-                    ["x"] = Universe.SCREENWIDTH + 200 + (Universe.SCREENWIDTH / 2), 
-                    ["y"] = newPipe2[1]["y"] 
-                }, 
-            };
+            var (upperPipes, lowerPipes) = GetNewPipes();
 
             var pipeVelX = -4;
 
@@ -124,10 +102,7 @@ namespace FlappyBlazorBird.Client.Pages
                     {
                         playerx = Convert.ToInt32( Universe.SCREENWIDTH * 0.2);
                         playery = Convert.ToInt32((Universe.SCREENHEIGHT - Universe.GetPlayerHeight) / 2);
-                        upperPipes[0]["x"] = Universe.SCREENWIDTH + 200;
-                        lowerPipes[0]["x"] = Universe.SCREENWIDTH + 200;
-                        upperPipes[1]["x"] = Universe.SCREENWIDTH + 200 + (Universe.SCREENWIDTH / 2);
-                        lowerPipes[1]["x"] = Universe.SCREENWIDTH + 200 + (Universe.SCREENWIDTH / 2);
+                        (upperPipes, lowerPipes) = GetNewPipes();
                         score = 0;
                         IsDead = false;
                     }
@@ -142,7 +117,7 @@ namespace FlappyBlazorBird.Client.Pages
                 var playerMidPos = playerx + Universe.GetPlayerWidth / 2;
 
                 // check for score
-                foreach(var pipe in upperPipes)
+                if (!IsDead) foreach(var pipe in upperPipes)
                 {
                     var pipeMidPos = pipe["x"] + Universe.GetPipeWidth / 2;
                     if (pipeMidPos <= playerMidPos && playerMidPos < pipeMidPos + 4)
@@ -264,6 +239,44 @@ namespace FlappyBlazorBird.Client.Pages
 
         }
 
+        private ( List<Dictionary<string,int>>, List<Dictionary<string,int>> ) GetNewPipes()
+        {
+            var newPipe1 = getRandomPipe();
+            var newPipe2 = getRandomPipe();
+
+            // list of upper pipes
+            var upperPipes = new List<Dictionary<string,int>>()
+            {
+                new Dictionary<string,int>() 
+                {
+                    ["x"] = Universe.SCREENWIDTH + 200, 
+                    ["y"] = newPipe1[0]["y"] 
+                },  
+                new Dictionary<string,int>() 
+                {
+                    ["x"] = Universe.SCREENWIDTH + 200 + (Universe.SCREENWIDTH / 2), 
+                    ["y"] = newPipe2[0]["y"] 
+                }, 
+            };
+
+            // list of lowerpipe
+            var lowerPipes = new List<Dictionary<string,int>>()
+            {
+                new Dictionary<string,int>() 
+                {
+                    ["x"] = Universe.SCREENWIDTH + 200, 
+                    ["y"] = newPipe1[1]["y"] 
+                },  
+                new Dictionary<string,int>() 
+                {
+                    ["x"] = Universe.SCREENWIDTH + 200 + (Universe.SCREENWIDTH / 2), 
+                    ["y"] = newPipe2[1]["y"] 
+                }, 
+            };
+
+            return (upperPipes, lowerPipes);
+        }
+
         private List<Printable> GetPrintableScore(int score)
         {
             var result = new List<Printable>();
@@ -292,15 +305,15 @@ namespace FlappyBlazorBird.Client.Pages
             }
             else
             {
-                var playerCenterX=player.x-(Universe.GetPlayerWidth/2);
+                var playerCenterX=player.x+(Universe.GetPlayerWidth/2);
                 var playerUpY=player.y;
                 var playerLoY=Convert.ToInt32( player.y+Universe.GetPlayerHeight*0.8 );
                 //foreach( var (uPipe, lPipe) in upperPipes.Zip(lowerPipes))
                 for( int i = 0; i< upperPipes.Count(); i++ )
                 {                    
                     var (uPipe, lPipe) = ( upperPipes[i], lowerPipes[i]);
-                    var uCollide = InRectangle( playerCenterX, playerUpY, uPipe["x"]+2, uPipe["y"], uPipe["x"] + Universe.GetPipeWidth, uPipe["y"] -4 + Universe.GetPipeHeight   );
-                    var lCollide = InRectangle( playerCenterX, playerLoY, lPipe["x"]+2, lPipe["y"], lPipe["x"] + Universe.GetPipeWidth, lPipe["y"] -4 + Universe.GetPipeHeight   );
+                    var uCollide = InRectangle( playerCenterX, playerUpY, uPipe["x"]+2, uPipe["y"], uPipe["x"] + Universe.GetPipeWidth -2, uPipe["y"] + Universe.GetPipeHeight   );
+                    var lCollide = InRectangle( playerCenterX, playerLoY, lPipe["x"]+2, lPipe["y"], lPipe["x"] + Universe.GetPipeWidth -2, lPipe["y"] + Universe.GetPipeHeight   );
 
                     if (uCollide || lCollide)
                     {

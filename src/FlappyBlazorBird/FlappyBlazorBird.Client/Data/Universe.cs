@@ -2,8 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+// THIS CODE IS "DIRECT TRANSLATION" FROM PYTHON PYGAME TO C# BLAZOR. REFACTOR PENDING
+
 namespace FlappyBlazorBird.Client.Data
 {
+
+    
+
     public class Universe: Printable
     {
         public List<Printable> ToRender = new List<Printable>();
