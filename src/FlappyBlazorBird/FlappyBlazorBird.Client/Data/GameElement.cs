@@ -18,14 +18,16 @@ namespace FlappyBlazorBird.Client.Data
         public string CssClass => this.GetType().Name.ToLower();
         public virtual string Image { get; set; }
 
-
+        public double? Opacity = null;
+        private string OpacityCss => Opacity.HasValue?$"opacity: {Opacity};":"";
         public string RotateTransform => this.R.HasValue?$"transform: rotate({Convert.ToInt32(R).ToString()}deg);":"";
         public virtual string CssStyle => $@"
             position: absolute;
             top: {CssY.ToString()}px;
             left: {CssX.ToString()}px;
             z-index: 0;
-            {RotateTransform}";
+            {RotateTransform}
+            {OpacityCss}";
     }
 
 }

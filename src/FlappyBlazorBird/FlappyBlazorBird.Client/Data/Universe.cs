@@ -1,17 +1,76 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 // THIS CODE IS "DIRECT TRANSLATION" FROM PYTHON PYGAME TO C# BLAZOR. REFACTOR PENDING
 
 namespace FlappyBlazorBird.Client.Data
 {
-
-    
-
     public class Universe: Printable
     {
-        public List<Printable> ToRender = new List<Printable>();
+        public Universe():base()
+        {
+            (upperPipes, lowerPipes) = GetNewPipes();
+            MainLoop();
+        }
+        
+        public async void MainLoop()
+        {
+            while (true)
+            {
+                System.Diagnostics.Stopwatch stopWatch = new System.Diagnostics.Stopwatch();
+                stopWatch.Start();
+                this.Recalcula();
+                this.OnTic();
+                stopWatch.Stop();
+                var d = this.FPS_DELAY - stopWatch.Elapsed.Milliseconds;
+                if (d<=1) d = 1;
+                await Task.Delay(d);                
+            }        
+        }
+        public int loopIter = 0;
+        public int basex = 0;
+        public int baseShift => this.GetBaseWidth - this.GetBackgroundWidth;
+
+        private void Recalcula()
+        {
+            foreach(var player in Players)
+            {
+                player.Tic();
+            }
+
+            // playerIndex basex change
+
+            loopIter = (loopIter + 1) % 30;
+            basex = -((-basex + 100) % baseShift);
+
+            MovePipes();
+
+        }
+
+        public readonly List<Bird> Players = new List<Bird>();
+        public readonly List<Printable> PrintablePiles = new List<Printable>();
+
+        #region Event
+        public static event EventHandler<TicEventArgs> Tic; 
+
+        protected virtual void OnTic()
+        {
+            EventHandler<TicEventArgs> handler = Tic;
+            var e = new TicEventArgs(Players.ToList(), PrintablePiles.ToList(),  this);
+            handler?.Invoke(this, e);
+        }
+        #endregion
+
+        #region MainLoop
+
+        #endregion
+
+        public int pipeVelX = -4;
+        public List<Dictionary<string,int>> upperPipes;
+        public List<Dictionary<string,int>> lowerPipes;
+
         public string DivStyle => 
             $@"max-width: {SCREENWIDTH}px; 
             min-width: {SCREENWIDTH}px; 
@@ -131,5 +190,105 @@ namespace FlappyBlazorBird.Client.Data
         {
             return digit == 1 ? 16 : 24;
         }
+
+
+        public ( List<Dictionary<string,int>>, List<Dictionary<string,int>> ) GetNewPipes()
+        {
+            var newPipe1 = getRandomPipe();
+            var newPipe2 = getRandomPipe();
+
+            // list of upper pipes
+            var upperPipes = new List<Dictionary<string,int>>()
+            {
+                new Dictionary<string,int>() 
+                {
+                    ["x"] = Universe.SCREENWIDTH + 200, 
+                    ["y"] = newPipe1[0]["y"] 
+                },  
+                new Dictionary<string,int>() 
+                {
+                    ["x"] = Universe.SCREENWIDTH + 200 + (Universe.SCREENWIDTH / 2), 
+                    ["y"] = newPipe2[0]["y"] 
+                }, 
+            };
+
+            // list of lowerpipe
+            var lowerPipes = new List<Dictionary<string,int>>()
+            {
+                new Dictionary<string,int>() 
+                {
+                    ["x"] = Universe.SCREENWIDTH + 200, 
+                    ["y"] = newPipe1[1]["y"] 
+                },  
+                new Dictionary<string,int>() 
+                {
+                    ["x"] = Universe.SCREENWIDTH + 200 + (Universe.SCREENWIDTH / 2), 
+                    ["y"] = newPipe2[1]["y"] 
+                }, 
+            };
+
+            return (upperPipes, lowerPipes);
+        }
+
+        private void MovePipes()
+        {
+            // move pipes to left
+            for( int i = 0; i< this.upperPipes.Count(); i++ )
+            {
+                var (uPipe, lPipe) = ( this.upperPipes[i], this.lowerPipes[i]);
+                uPipe["x"] += this.pipeVelX;
+                lPipe["x"] += this.pipeVelX;
+            }
+
+            // add new pipe when first pipe is about to touch left of screen
+            if ( !upperPipes.Any() || (  0 < upperPipes[0]["x"] &&  upperPipes[0]["x"] < 5 ) )
+            {
+                var newPipe = getRandomPipe();
+                upperPipes.Add(newPipe[0]);
+                lowerPipes.Add(newPipe[1]);
+            }
+
+            // remove first pipe if its out of the screen
+            if (upperPipes[0]["x"] < - this.GetPipeWidth )
+            {
+                upperPipes.RemoveAt(0);
+                lowerPipes.RemoveAt(0);
+            }   
+
+            //update pritable pipes
+            lock(PrintablePiles)
+            {
+                PrintablePiles.Clear();
+                for( int i = 0; i< this.upperPipes.Count(); i++ )
+                {
+                    var (uPipe, lPipe) = ( this.upperPipes[i], this.lowerPipes[i]);
+
+                    PrintablePiles.Add(
+                        new Printable( uPipe["x"], uPipe["y"], Universe.PIPES_LIST[0], -180 )
+                    );
+                    PrintablePiles.Add(
+                        new Printable( lPipe["x"], lPipe["y"], Universe.PIPES_LIST[1] )
+                    );
+                }            
+            }
+        }
+
+        private Dictionary<string,int>[] getRandomPipe()
+        {
+            //returns a randomly generated pipe
+            // y of gap between upper and lower pipe
+
+            Random random = new Random();
+            var gapY = random.Next(0, Convert.ToInt32(Universe.BASEY * 0.6 - Universe.PIPEGAPSIZE) );
+            gapY += Convert.ToInt32(Universe.BASEY * 0.2);
+            var pipeHeight = this.GetPipeHeight;
+            var pipeX = Universe.SCREENWIDTH + 10;
+            var pipe = new [] {
+                new Dictionary<string,int>() {["x"] = pipeX, ["y"] = gapY - pipeHeight },  // upper pipe
+                new Dictionary<string,int>() {["x"] = pipeX, ["y"] = gapY + Universe.PIPEGAPSIZE }, // lower pipe
+            };
+            return pipe;
+        }
+
     }
 }
