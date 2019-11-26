@@ -30,7 +30,7 @@ namespace FlappyBlazorBird.Client.Data
         public override int Width => SCREENHEIGHT;
         public override int Height => SCREENHEIGHT;
 
-        public const int PIPEGAPSIZE  = 100; // gap between upper and lower part of pipe
+        public const int PIPEGAPSIZE  = 150; // gap between upper and lower part of pipe
         public static double BASEY => SCREENHEIGHT * 0.79;
 
         //# image, sound and hitmask  dicts
