@@ -23,6 +23,12 @@ namespace FlappyBlazorBird.Client.Data
         public int score = 0;
         public int playerIndex = 0;
 
+        public int GraceInterval => 3000 / Universe.FPS_DELAY;
+        public int CurrentGraceInterval = 0;
+
+        public int PenaltyTime => 1500 / Universe.FPS_DELAY;
+        public int CurrentPenaltyTime = 0;
+
         public IEnumerator<int> playerIndexGen = new Cycle<int>(new [] {0, 1, 2, 1}).GetEnumerator();
 
         public int playerx;
@@ -62,24 +68,29 @@ namespace FlappyBlazorBird.Client.Data
                         playerFlapped = true;
                         //SOUNDS['wing'].play()
                     }
-                } else if (IsDead && ( k.Key == "P" || k.Key == "p") )
+                } else if (IsDead && CurrentPenaltyTime==0 && ( k.Key == "P" || k.Key == "p") )
                 {
                     playerx = Convert.ToInt32( Universe.SCREENWIDTH * 0.2);
                     playery = Convert.ToInt32((Universe.SCREENHEIGHT - Universe.GetPlayerHeight) / 2);
                     score = 0;
                     IsDead = false;
+                    CurrentGraceInterval = GraceInterval;
                 }
             }
 
             var crashTest = CheckCrash( ( x: playerx, y: playery, index: playerIndex ),
                                         Universe.upperPipes, Universe.lowerPipes);
                                 
-            if (crashTest.collPipe) IsDead = true;
+            if (crashTest.collPipe && !IsDead)
+            {
+                IsDead = true;
+                CurrentPenaltyTime = PenaltyTime;  
+            } 
 
             var playerMidPos = playerx + Universe.GetPlayerWidth / 2;
 
             // check for score
-            if (!IsDead) foreach(var pipe in Universe.upperPipes)
+            if (!IsDead && CurrentGraceInterval==0) foreach(var pipe in Universe.upperPipes)
             {
                 var pipeMidPos = pipe["x"] + Universe.GetPipeWidth / 2;
                 if (pipeMidPos <= playerMidPos && playerMidPos < pipeMidPos + 4)
@@ -88,6 +99,9 @@ namespace FlappyBlazorBird.Client.Data
                     //SOUNDS['point'].play()                    
                 }
             }
+
+            CurrentGraceInterval=CurrentGraceInterval>0?CurrentGraceInterval-1:0;
+            CurrentPenaltyTime=CurrentPenaltyTime>0?CurrentPenaltyTime-1:0;
 
             // rotate the player
             if (playerRot > -90)
@@ -109,7 +123,19 @@ namespace FlappyBlazorBird.Client.Data
             }
 
             var playerHeight = Universe.GetPlayerHeight;
-            playery += new int[] { playerVelY, Convert.ToInt32( Universe.BASEY - playery - playerHeight) }.Min();
+            var bottom = Universe.BASEY - playerHeight;
+            //playery += new int[] { playerVelY, Convert.ToInt32( bottom - playery) }.Min();
+            playery += playerVelY;
+            if (playery > bottom)
+            {
+                playery=Convert.ToInt32(bottom);
+                playerx += Universe.pipeVelX;
+            }
+
+            if (playery==bottom && this.IsDead )
+            {
+                
+            }
 
             if ((Universe.loopIter + 1) % 3 == 0)
             {
@@ -129,6 +155,9 @@ namespace FlappyBlazorBird.Client.Data
 
         private (bool collPipe, bool collBase) CheckCrash((int x, int y, int index) player, List<Dictionary<string, int>> upperPipes, List<Dictionary<string, int>> lowerPipes)
         {
+
+            if (CurrentGraceInterval>0) return (false,false);
+
             var pi = player.index;
             
             if (player.y + Universe.GetPlayerHeight >= Universe.BASEY - 1)

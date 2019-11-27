@@ -43,25 +43,52 @@ namespace FlappyBlazorBird.Client.Pages
         private void Render(object sender, TicEventArgs e)
         {
             var toRender = new List<Printable>();
-            toRender.Add(new Printable( 0, 0, e.Universe.CurrentBackgroundImage ));
-            toRender.AddRange(e.PrintablePipes);
-            toRender.Add(new Printable( e.Universe.basex, Convert.ToInt32( Universe.BASEY), Universe.IMAGES["base"]  ));
+
+            // background
+            var background = new Printable( 0, 0, e.Universe.CurrentBackgroundImage );
+            toRender.Add(background);
+
+            // pipes
+            var pipes = e.PrintablePipes;
+            if (MyBird.IsDead || MyBird.CurrentGraceInterval > 0)
+            {
+                pipes = pipes.Select(p=>new Printable(Convert.ToInt32(p.X),Convert.ToInt32(p.Y),p.Image,Convert.ToInt32(p.R),0.4) ).ToList();
+            }
+            toRender.AddRange(pipes);
+
+            // the base
+            var theBase = new Printable( e.Universe.basex, Convert.ToInt32( Universe.BASEY), Universe.IMAGES["base"]  );
+            toRender.Add(theBase);
+
+            // score
             toRender.AddRange( GetPrintableScore(MyBird.score) );
+
+            // other players
             foreach(var bird in e.Players)
             {
                 if (bird != MyBird)
                 {
-                    var otherBird = new Printable( bird.playerx, bird.playery,  bird.player_images[bird.playerIndex] , -bird.visibleRot, opacity: 0.5);
+                    var otherBirdIndex = bird.IsDead?0:bird.playerIndex;
+                    var otherBird = new Printable( bird.playerx, bird.playery,  bird.player_images[otherBirdIndex] , -bird.visibleRot, opacity: 0.5);
                     toRender.Add(otherBird);
                 }
             }
-            var ocell = new Printable( MyBird.playerx, MyBird.playery,  MyBird.player_images[MyBird.playerIndex] , -MyBird.visibleRot);
+
+            // myBird
+            var myBirdIndex = MyBird.IsDead?0:MyBird.playerIndex;
+            var ocell = new Printable( MyBird.playerx, MyBird.playery,  MyBird.player_images[myBirdIndex] , -MyBird.visibleRot);
             toRender.Add(ocell);
-            if (MyBird.IsDead)
+
+            // play again
+            if (MyBird.IsDead && MyBird.CurrentPenaltyTime==0)
             {
                 var playAgain = new Printable( (Universe.SCREENWIDTH - 192)/2 , Universe.SCREENHEIGHT/2,  Universe.IMAGES["pressptoplayagain"]);
                 toRender.Add(playAgain);
-            }
+            } else if (MyBird.IsDead && MyBird.CurrentPenaltyTime>0)
+            {
+                var gameOver = new Printable( (Universe.SCREENWIDTH - 192)/2 , Universe.SCREENHEIGHT/2,  Universe.IMAGES["gameover"]);
+                toRender.Add(gameOver);
+            } 
 
             lock(ToRender) 
             {
