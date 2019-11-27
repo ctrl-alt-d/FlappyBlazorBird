@@ -19,7 +19,7 @@ namespace FlappyBlazorBird.Client.Data
         public virtual string Image { get; set; }
 
         public double? Opacity = null;
-        private string OpacityCss => Opacity.HasValue?$"opacity: {Opacity};":"";
+        private string OpacityCss => Opacity.HasValue?$"opacity: {Opacity.Value.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture)};":"";
         public string RotateTransform => this.R.HasValue?$"transform: rotate({Convert.ToInt32(R).ToString()}deg);":"";
         public virtual string CssStyle => $@"
             position: absolute;

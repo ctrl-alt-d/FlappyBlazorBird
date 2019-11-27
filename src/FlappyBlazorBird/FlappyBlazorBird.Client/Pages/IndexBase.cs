@@ -50,9 +50,16 @@ namespace FlappyBlazorBird.Client.Pages
 
             // pipes
             var pipes = e.PrintablePipes;
+            
             if (MyBird.IsDead || MyBird.CurrentGraceInterval > 0)
             {
+                System.Console.WriteLine("trans");
                 pipes = pipes.Select(p=>new Printable(Convert.ToInt32(p.X),Convert.ToInt32(p.Y),p.Image,Convert.ToInt32(p.R),0.4) ).ToList();
+            }
+            else
+            {
+                                System.Console.WriteLine("no trans");
+
             }
             toRender.AddRange(pipes);
 
