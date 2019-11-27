@@ -16,13 +16,14 @@ namespace FlappyBlazorBird.Client.Data
         {
             Universe = universe;
             randPlayer = random.Next(0, Universe.PLAYERS_LIST.Count() - 1);
+            IsDead=true;
             InitializePlayer();
             Universe.Players.Add(this);
         }
         public int score = 0;
         public int playerIndex = 0;
 
-        public int GraceInterval => 3000 / Universe.FPS_DELAY;
+        public int GraceInterval => 2000 / Universe.FPS_DELAY;
         public int CurrentGraceInterval = 0;
 
         public int PenaltyTime => 1500 / Universe.FPS_DELAY;
@@ -69,9 +70,7 @@ namespace FlappyBlazorBird.Client.Data
                     }
                 } else if (IsDead && CurrentPenaltyTime==0 && ( k.Key == "P" || k.Key == "p") )
                 {
-                    IsDead = false;
                     InitializePlayer();
-                    CurrentGraceInterval = GraceInterval;
                 }
             }
 
@@ -203,7 +202,9 @@ namespace FlappyBlazorBird.Client.Data
             playerx = Convert.ToInt32( Universe.SCREENWIDTH * 0.2);
             playery = Convert.ToInt32((Universe.SCREENHEIGHT - Universe.GetPlayerHeight) / 2);
             score = 0;
-
+            Universe.PleaseRestart();
+            CurrentGraceInterval = GraceInterval;
+            IsDead = false;
         }
     }  
 }

@@ -10,7 +10,7 @@
                 lock(ToRender) {toRender = ToRender.ToList(); }
                 foreach (var printable in toRender)
                 {
-                    <img src="@printable.Image" style="@printable.CssStyle" class="zero"/>    
+                    <img src="@printable.Image" style="@printable.CssStyle" class="zero" draggable="false"/>    
                 }    
             }
         </div>

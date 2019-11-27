@@ -202,12 +202,12 @@ namespace FlappyBlazorBird.Client.Data
             {
                 new Dictionary<string,int>() 
                 {
-                    ["x"] = Universe.SCREENWIDTH + 200, 
+                    ["x"] = Universe.SCREENWIDTH + 250, 
                     ["y"] = newPipe1[0]["y"] 
                 },  
                 new Dictionary<string,int>() 
                 {
-                    ["x"] = Universe.SCREENWIDTH + 200 + (Universe.SCREENWIDTH / 2), 
+                    ["x"] = Universe.SCREENWIDTH + 250 + (Universe.SCREENWIDTH / 2), 
                     ["y"] = newPipe2[0]["y"] 
                 }, 
             };
@@ -217,12 +217,12 @@ namespace FlappyBlazorBird.Client.Data
             {
                 new Dictionary<string,int>() 
                 {
-                    ["x"] = Universe.SCREENWIDTH + 200, 
+                    ["x"] = Universe.SCREENWIDTH + 250, 
                     ["y"] = newPipe1[1]["y"] 
                 },  
                 new Dictionary<string,int>() 
                 {
-                    ["x"] = Universe.SCREENWIDTH + 200 + (Universe.SCREENWIDTH / 2), 
+                    ["x"] = Universe.SCREENWIDTH + 250 + (Universe.SCREENWIDTH / 2), 
                     ["y"] = newPipe2[1]["y"] 
                 }, 
             };
@@ -271,6 +271,17 @@ namespace FlappyBlazorBird.Client.Data
                     );
                 }            
             }
+        }
+
+        internal void PleaseRestart()
+        {
+
+            lock(Players) 
+            if (Players.All(p=>p.IsDead)) 
+            lock(upperPipes) 
+            lock(lowerPipes) 
+            (upperPipes, lowerPipes) = GetNewPipes();
+
         }
 
         private Dictionary<string,int>[] getRandomPipe()
