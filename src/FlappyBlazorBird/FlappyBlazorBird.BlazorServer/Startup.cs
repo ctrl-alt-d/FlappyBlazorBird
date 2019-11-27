@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using FlappyBlazorBird.BlazorServer.Data;
 using FlappyBlazorBird.Client.Data;
 
 namespace FlappyBlazorBird.BlazorServer
@@ -29,7 +28,7 @@ namespace FlappyBlazorBird.BlazorServer
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
-            services.AddScoped<Universe>();
+            services.AddSingleton<Universe>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
