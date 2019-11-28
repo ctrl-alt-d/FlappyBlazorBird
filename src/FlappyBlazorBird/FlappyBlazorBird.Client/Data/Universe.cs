@@ -14,19 +14,22 @@ namespace FlappyBlazorBird.Client.Data
             (upperPipes, lowerPipes) = GetNewPipes();
             MainLoop();
         }
+
+        public int CurrentFps = 0;
         
         public async void MainLoop()
         {
             while (true)
             {
                 System.Diagnostics.Stopwatch stopWatch = new System.Diagnostics.Stopwatch();
+                stopWatch.Stop();                
                 stopWatch.Start();
                 this.Recalcula();
-                this.OnTic();
-                stopWatch.Stop();
+                this.OnTic();                
                 var d = this.FPS_DELAY - stopWatch.Elapsed.Milliseconds;
                 if (d<=1) d = 1;
                 await Task.Delay(d);                
+                CurrentFps = Convert.ToInt32(1000.0 / stopWatch.Elapsed.Milliseconds);
             }        
         }
         public int loopIter = 0;

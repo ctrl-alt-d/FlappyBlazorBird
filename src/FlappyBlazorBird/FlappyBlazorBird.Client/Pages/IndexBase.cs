@@ -13,6 +13,12 @@ using Microsoft.JSInterop;
 namespace FlappyBlazorBird.Client.Pages
 {
 
+    public class Statistics
+    {
+        public int fps;
+        public int totalPlayers;
+    }
+
     public class IndexBase: ComponentBase, IDisposable
     {
         [Inject] protected Universe Universe {get; set; }      
@@ -37,6 +43,9 @@ namespace FlappyBlazorBird.Client.Pages
             MyBird = new Bird(Universe);
             Universe.Tic += Render;
         }
+
+        protected Statistics Statistics = new Statistics() {};
+
 
         protected List<Printable> ToRender = new List<Printable>();
 
@@ -93,6 +102,8 @@ namespace FlappyBlazorBird.Client.Pages
 
             lock(ToRender) 
             {
+                Statistics.totalPlayers = e.Players.Count();
+                Statistics.fps = Universe.CurrentFps;
                 ToRender.Clear();
                 ToRender.AddRange(toRender);
             }

@@ -5,6 +5,7 @@ html, body {
     border: 0;
     padding: 0;
     background-color: black;
+    overflow: hidden;
 }
 
 .zero {
@@ -24,6 +25,7 @@ html, body {
     flex-direction: row;
     flex-wrap: wrap;    
     flex: 1;
+    overflow: hidden;
 }
 
 .col {
@@ -31,4 +33,32 @@ html, body {
     flex: 1;
     z-index: 10;
     background-color: black;
+    overflow: hidden;
 }
+
+.statistics {
+    position: absolute;
+    width: 50px;
+    top: 5px;
+    left: 5px;
+    border: 0;
+    margin: 0;
+    padding: 5;
+    background-color:rgba(0, 0, 0, 0.3);
+}
+
+.statistics ul
+{
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+
+.statistics ul li
+{
+    margin: 0;
+    padding: 0;
+    font-size: 7px;
+    font-family: "Monospace";
+}
+
