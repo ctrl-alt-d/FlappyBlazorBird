@@ -5,6 +5,7 @@ html, body {
     border: 0;
     padding: 0;
     background-color: black;
+    overflow: hidden;
 }
 
 .zero {
@@ -14,6 +15,7 @@ html, body {
 .outer-div {
     display: flex;
     flex-flow: column;
+    min-height: 1000px;
     height: 100vh;
     overflow: hidden;
 } 
@@ -23,6 +25,7 @@ html, body {
     flex-direction: row;
     flex-wrap: wrap;    
     flex: 1;
+    overflow: hidden;
 }
 
 .col {
@@ -30,4 +33,5 @@ html, body {
     flex: 1;
     z-index: 10;
     background-color: black;
+    overflow: hidden;
 }
