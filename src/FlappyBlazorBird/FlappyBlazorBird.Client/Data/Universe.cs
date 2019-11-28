@@ -73,16 +73,6 @@ namespace FlappyBlazorBird.Client.Data
         public int pipeVelX = -4;
         public List<Dictionary<string,int>> upperPipes;
         public List<Dictionary<string,int>> lowerPipes;
-
-        public string DivStyle => 
-            $@"max-width: {SCREENWIDTH}px; 
-            min-width: {SCREENWIDTH}px; 
-            height: {SCREENHEIGHT}px; 
-            max-height: {SCREENHEIGHT}px; 
-            border: 0; 
-            padding: 0; 
-            margin: 0; 
-            position: relative;";
             
         public const int FPS = 30;
         public int FPS_DELAY => Convert.ToInt32( 1000.0 / FPS );

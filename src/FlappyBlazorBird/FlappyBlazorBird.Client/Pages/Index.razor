@@ -3,29 +3,26 @@
 
 @page "/"
 <div class="outer-div" @ref="OuterDiv" @onkeydown="@KeyDown" tabindex="0" @onclick="@OnClick" >         
-    <div class="row">
-        <div class="col" style="order:2;@Universe.DivStyle">
-            @{
-                var toRender = new List<Printable>();
-                lock(ToRender) {toRender = ToRender.ToList(); }
-                foreach (var printable in toRender)
-                {
-                    <img src="@printable.Image" style="@printable.CssStyle" class="zero" draggable="false"/>    
-                }    
-            }
-            <div class="statistics">
-                <ul>
-                    <li>fps @(Statistics.fps.ToString())</li>
-                    <li>players @(Statistics.totalPlayers.ToString())</li>
-                </ul>
-            </div>
+    <div class="top-div"></div>
+    <div class="game-div">
+        @{
+            var toRender = new List<Printable>();
+            lock(ToRender) {toRender = ToRender.ToList(); }
+            foreach (var printable in toRender)
+            {
+                <img src="@printable.Image" style="@printable.CssStyle" draggable="false" dragstart="false;" class="unselectable"/>    
+            }    
+        }
+        <div class="statistics">
+            <ul>
+                <li>fps @(Statistics.fps.ToString())</li>
+                <li>players @(Statistics.totalPlayers.ToString())</li>
+            </ul>
         </div>
-        <div class="col" style="order:1"></div>
-        <div class="col" style="order:3"></div>
-    </div>        
-    <div class="row" style="min-height: calc(100% - 512px); height: calc(100% - 512px);">
-        <div class="col"> </div>
-    </div>        
+    </div>
+    <div class="left-div"></div>
+    <div class="right-div"></div>
+    <div class="down-div"></div>
 </div>
 
 

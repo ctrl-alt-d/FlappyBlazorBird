@@ -26,8 +26,6 @@ namespace FlappyBlazorBird.Client.Data
             top: {CssY.ToString()}px;
             left: {CssX.ToString()}px;
             z-index: 0;
-            user-drag: none; 
-            user-select: none;
             {RotateTransform}
             {OpacityCss}";
     }

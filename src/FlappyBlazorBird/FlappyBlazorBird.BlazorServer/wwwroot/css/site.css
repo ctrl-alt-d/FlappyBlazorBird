@@ -8,33 +8,104 @@ html, body {
     overflow: hidden;
 }
 
-.zero {
-    border: 0; padding: 0; margin: 0;
-}
-
 .outer-div {
-    display: flex;
-    flex-flow: column;
-    min-height: 1000px;
+    position: fixed;
+    min-height: 100vh;
+    max-height: 100vh;
     height: 100vh;
+    min-width: 100vh;
+    max-width: 100vh;
+    width: 100vh;
     overflow: hidden;
 } 
 
-.row {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;    
-    flex: 1;
+.game-div {
     overflow: hidden;
+    position: fixed;
+    top: calc((100vh - 512px)*0.2);
+    left: calc((100vw - 288px)*0.5);
+    min-height: 512px;
+    max-height:  512px;
+    height:  512px;
+    min-width:  288px;
+    max-width:  288px;
+    width:  288px;
 }
 
-.col {
-    flex-basis: 100%;
-    flex: 1;
-    z-index: 10;
-    background-color: black;
+.left-div {
+    position: fixed;
     overflow: hidden;
+    top: 0;
+    left: 0;
+    min-height: 100vh;
+    max-height:  100vh;
+    height:  100vh;
+    min-width:  calc((100vw - 288px)/2);
+    max-width:  calc((100vw - 288px)/2);
+    width:  calc((100vw - 288px)/2);
+    background-color: black;
+    z-index: 100;
 }
+
+.right-div {
+    position: fixed;
+    overflow: hidden;
+    top: 0;
+    right: 0;
+    min-height: 100vh;
+    max-height:  100vh;
+    height:  100vh;
+    min-width:  calc((100vw - 288px)/2);
+    max-width:  calc((100vw - 288px)/2);
+    width:  calc((100vw - 288px)/2);
+    background-color: black;
+    z-index: 100;
+}
+
+.top-div {
+    position: fixed;
+    overflow: hidden;
+    top: 0;
+    left: 0;
+    min-height: calc((100vh - 512px) * 0.2 );
+    max-height:  calc((100vh - 512px) * 0.2 );
+    height:  calc((100vh - 512px) * 0.2 );
+    min-width: 100vw;
+    max-width: 100vw;
+    width: 100vw;
+    background-color: black;
+    z-index: 100;
+}
+
+.down-div {
+    position: fixed;
+    overflow: hidden;
+    bottom: 0;
+    left: 0;
+    min-height: calc((100vh - 512px) * 0.8);
+    max-height:  calc((100vh - 512px) * 0.8);
+    height:  calc((100vh - 512px) * 0.8);
+    min-width: 100vw;
+    max-width: 100vw;
+    width: 100vw;
+    background-color: black;
+    z-index: 100;
+}
+
+
+img {
+    pointer-events: none;
+    border: 0; padding: 0; margin: 0;
+}
+
+.unselectable {
+    user-drag: none; 
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-drag: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+  }
 
 .statistics {
     position: absolute;
