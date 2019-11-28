@@ -1,28 +1,27 @@
 ﻿@inherits IndexBase
 @using FlappyBlazorBird.Client.Data
-
 @page "/"
-<div class="outer-div" @ref="OuterDiv" @onkeydown="@KeyDown" tabindex="0" @onclick="@OnClick" >         
-    <div class="top-div"></div>
-    <div class="game-div">
-        @{
-            var toRender = new List<Printable>();
-            lock(ToRender) {toRender = ToRender.ToList(); }
-            foreach (var printable in toRender)
+@lock(ToRender) 
+{
+    <div class="outer-div" @ref="OuterDiv" @onkeydown="@KeyDown" tabindex="0" @onclick="@OnClick" >         
+        <div class="top-div"></div>
+        <div class="game-div">
+            @foreach (var p in ToRender)
             {
+                var printable = Printable.Clone(p);
                 <img src="@printable.Image" style="@printable.CssStyle" draggable="false" dragstart="false;" class="unselectable"/>    
-            }    
-        }
-        <div class="statistics">
-            <ul>
-                <li>fps @(Statistics.fps.ToString())</li>
-                <li>players @(Statistics.totalPlayers.ToString())</li>
-            </ul>
+            }                
+            <div class="statistics">
+                <ul>
+                    <li>fps @(Statistics.fps.ToString())</li>
+                    <li>players @(Statistics.totalPlayers.ToString())</li>
+                </ul>
+            </div>
         </div>
+        <div class="left-div"></div>
+        <div class="right-div"></div>
+        <div class="down-div"></div>
     </div>
-    <div class="left-div"></div>
-    <div class="right-div"></div>
-    <div class="down-div"></div>
-</div>
+}
 
 

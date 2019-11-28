@@ -100,10 +100,10 @@ namespace FlappyBlazorBird.Client.Pages
                 toRender.Add(gameOver);
             } 
 
+            Statistics.totalPlayers = e.Players.Count();
+            Statistics.fps = Universe.CurrentFps;
             lock(ToRender) 
             {
-                Statistics.totalPlayers = e.Players.Count();
-                Statistics.fps = Universe.CurrentFps;
                 ToRender.Clear();
                 ToRender.AddRange(toRender);
             }
