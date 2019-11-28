@@ -19,6 +19,7 @@ namespace FlappyBlazorBird.Client.Data
             IsDead=true;
             InitializePlayer();
             Universe.Players.Add(this);
+            Universe.TotalSessions++;
         }
         public int score = 0;
         public int playerIndex = 0;
@@ -92,6 +93,7 @@ namespace FlappyBlazorBird.Client.Data
                 if (pipeMidPos <= playerMidPos && playerMidPos < pipeMidPos + 4)
                 {
                     score += 1;
+                    if (score > Universe.MaxScore) Universe.MaxScore = score;
                     //SOUNDS['point'].play()                    
                 }
             }

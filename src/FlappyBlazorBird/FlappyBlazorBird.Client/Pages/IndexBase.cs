@@ -17,6 +17,10 @@ namespace FlappyBlazorBird.Client.Pages
     {
         public int fps;
         public int totalPlayers;
+        public string totalSessions;
+        public string startedAt;
+
+        public int maxScore ;
     }
 
     public class IndexBase: ComponentBase, IDisposable
@@ -102,6 +106,9 @@ namespace FlappyBlazorBird.Client.Pages
 
             Statistics.totalPlayers = e.Players.Count();
             Statistics.fps = Universe.CurrentFps;
+            Statistics.totalSessions = Universe.TotalSessions.ToString();
+            Statistics.startedAt = Universe.StartedAt;
+            Statistics.maxScore = Universe.MaxScore;
             lock(ToRender) 
             {
                 ToRender.Clear();

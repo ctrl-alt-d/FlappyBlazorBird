@@ -12,11 +12,14 @@ namespace FlappyBlazorBird.Client.Data
         public Universe():base()
         {
             (upperPipes, lowerPipes) = GetNewPipes();
+            StartedAt = DateTime.Now.ToString();
             MainLoop();
         }
 
         public int CurrentFps = 0;
-        
+        public string StartedAt;
+        public long TotalSessions = 0;
+        public int MaxScore = 0;
         public async void MainLoop()
         {
             while (true)
