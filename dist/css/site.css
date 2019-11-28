@@ -14,6 +14,7 @@ html, body {
 .outer-div {
     display: flex;
     flex-flow: column;
+    min-height: 1000px;
     height: 100vh;
     overflow: hidden;
 } 
