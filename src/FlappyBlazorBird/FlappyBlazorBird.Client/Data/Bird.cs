@@ -89,7 +89,7 @@ namespace FlappyBlazorBird.Client.Data
             // check for score
             if (!IsDead && CurrentGraceInterval==0) foreach(var pipe in Universe.upperPipes)
             {
-                var pipeMidPos = pipe["x"] + Universe.GetPipeWidth / 2;
+                var pipeMidPos = pipe.X + Universe.GetPipeWidth / 2;
                 if (pipeMidPos <= playerMidPos && playerMidPos < pipeMidPos + 4)
                 {
                     score += 1;
@@ -122,18 +122,17 @@ namespace FlappyBlazorBird.Client.Data
 
             var playerHeight = Universe.GetPlayerHeight;
             var bottom = Universe.BASEY - playerHeight;
-            //playery += new int[] { playerVelY, Convert.ToInt32( bottom - playery) }.Min();
+
             playery += playerVelY;
+
+            // if is touching base
             if (playery > bottom)
             {
                 playery=Convert.ToInt32(bottom);
                 playerx += Universe.pipeVelX;
+                if (playerx < -100) playerx = -100;
             }
 
-            if (playery==bottom && this.IsDead )
-            {
-                
-            }
 
             if ((Universe.loopIter + 1) % 3 == 0)
             {
@@ -151,7 +150,7 @@ namespace FlappyBlazorBird.Client.Data
 
         }      
 
-        private (bool collPipe, bool collBase) CheckCrash((int x, int y, int index) player, List<Dictionary<string, int>> upperPipes, List<Dictionary<string, int>> lowerPipes)
+        private (bool collPipe, bool collBase) CheckCrash((int x, int y, int index) player, List<PipePart> upperPipes, List<PipePart> lowerPipes)
         {
 
             var pi = player.index;
@@ -169,8 +168,8 @@ namespace FlappyBlazorBird.Client.Data
                 for( int i = 0; i< upperPipes.Count(); i++ )
                 {                    
                     var (uPipe, lPipe) = ( upperPipes[i], lowerPipes[i]);
-                    var uCollide = InRectangle( playerCenterX, playerUpY, uPipe["x"]+2, uPipe["y"], uPipe["x"] + Universe.GetPipeWidth -2, uPipe["y"] + Universe.GetPipeHeight   );
-                    var lCollide = InRectangle( playerCenterX, playerLoY, lPipe["x"]+2, lPipe["y"], lPipe["x"] + Universe.GetPipeWidth -2, lPipe["y"] + Universe.GetPipeHeight   );
+                    var uCollide = InRectangle( playerCenterX, playerUpY, uPipe.X+2, uPipe.Y, uPipe.X + Universe.GetPipeWidth -2, uPipe.Y + Universe.GetPipeHeight   );
+                    var lCollide = InRectangle( playerCenterX, playerLoY, lPipe.X+2, lPipe.Y, lPipe.X + Universe.GetPipeWidth -2, lPipe.Y + Universe.GetPipeHeight   );
 
                     if (uCollide || lCollide)
                     {
@@ -181,7 +180,8 @@ namespace FlappyBlazorBird.Client.Data
 
             return (collPipe: false, collBase: false);
         }
-        private bool InRectangle(int pX, int pY, int lX, int uY, int rX, int lY)
+
+        private bool InRectangle(int pX, int pY, double lX, double uY, double rX, double lY)
         {
             bool isAtLeft = pX < lX;
             bool isAtRight = pX > rX;
