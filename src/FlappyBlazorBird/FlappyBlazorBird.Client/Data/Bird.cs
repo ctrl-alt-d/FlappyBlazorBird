@@ -58,7 +58,8 @@ namespace FlappyBlazorBird.Client.Data
         public int visibleRot;
         public bool Tic()
         {
-            while (KeyPressed.Any())
+
+            lock(KeyPressed) while (KeyPressed.Any())
             {
                 var k = KeyPressed.Dequeue();
                 if (!IsDead && (k.Key == "ArrowUp" || k.Key == " "  ))
@@ -75,8 +76,7 @@ namespace FlappyBlazorBird.Client.Data
                 }
             }
 
-            var crashTest = CheckCrash( ( x: playerx, y: playery, index: playerIndex ),
-                                        Universe.upperPipes, Universe.lowerPipes);
+            var crashTest = CheckCrash( );
                                 
             if (crashTest.collPipe)
             {
@@ -87,7 +87,9 @@ namespace FlappyBlazorBird.Client.Data
             var playerMidPos = playerx + Universe.GetPlayerWidth / 2;
 
             // check for score
-            if (!IsDead && CurrentGraceInterval==0) foreach(var pipe in Universe.upperPipes)
+            if (!IsDead && CurrentGraceInterval==0) 
+            lock (Universe.upperPipes)
+            foreach(var pipe in Universe.upperPipes)
             {
                 var pipeMidPos = pipe.X + Universe.GetPipeWidth / 2;
                 if (pipeMidPos <= playerMidPos && playerMidPos < pipeMidPos + 4)
@@ -150,24 +152,23 @@ namespace FlappyBlazorBird.Client.Data
 
         }      
 
-        private (bool collPipe, bool collBase) CheckCrash((int x, int y, int index) player, List<PipePart> upperPipes, List<PipePart> lowerPipes)
-        {
-
-            var pi = player.index;
-            
-            if (player.y + Universe.GetPlayerHeight >= Universe.BASEY - 1)
+        private (bool collPipe, bool collBase) CheckCrash()
+        {            
+            if (playery + Universe.GetPlayerHeight >= Universe.BASEY - 1)
             {
                 return (true, true);
             }
             else
             {
-                var playerCenterX=player.x+(Universe.GetPlayerWidth/2);
-                var playerUpY=player.y;
-                var playerLoY=Convert.ToInt32( player.y+Universe.GetPlayerHeight*0.8 );
+                var playerCenterX=playerx+(Universe.GetPlayerWidth/2);
+                var playerUpY=playery;
+                var playerLoY=Convert.ToInt32( playery+Universe.GetPlayerHeight*0.8 );
                 //foreach( var (uPipe, lPipe) in upperPipes.Zip(lowerPipes))
-                for( int i = 0; i< upperPipes.Count(); i++ )
+                lock (Universe.upperPipes)
+                lock (Universe.lowerPipes)
+                for( int i = 0; i< Universe.upperPipes.Count(); i++ )
                 {                    
-                    var (uPipe, lPipe) = ( upperPipes[i], lowerPipes[i]);
+                    var (uPipe, lPipe) = ( Universe.upperPipes[i], Universe.lowerPipes[i]);
                     var uCollide = InRectangle( playerCenterX, playerUpY, uPipe.X+2, uPipe.Y, uPipe.X + Universe.GetPipeWidth -2, uPipe.Y + Universe.GetPipeHeight   );
                     var lCollide = InRectangle( playerCenterX, playerLoY, lPipe.X+2, lPipe.Y, lPipe.X + Universe.GetPipeWidth -2, lPipe.Y + Universe.GetPipeHeight   );
 

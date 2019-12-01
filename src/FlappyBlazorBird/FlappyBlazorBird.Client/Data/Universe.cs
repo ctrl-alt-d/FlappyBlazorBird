@@ -264,6 +264,8 @@ namespace FlappyBlazorBird.Client.Data
         private void MovePipes()
         {
             // move pipes to left
+            lock(this.upperPipes)
+            lock(this.lowerPipes)
             for( int i = 0; i< this.upperPipes.Count(); i++ )
             {
                 var (uPipe, lPipe) = ( this.upperPipes[i], this.lowerPipes[i]);
@@ -272,6 +274,8 @@ namespace FlappyBlazorBird.Client.Data
             }
 
             // add new pipe when first pipe is about to touch left of screen
+            lock(this.upperPipes)
+            lock(this.lowerPipes)
             if ( !upperPipes.Any() || (  0 < upperPipes[0].X &&  upperPipes[0].X < 5 ) )
             {
                 var newPipe = getRandomPipe();
@@ -280,6 +284,8 @@ namespace FlappyBlazorBird.Client.Data
             }
 
             // remove first pipe if its out of the screen
+            lock(this.upperPipes)
+            lock(this.lowerPipes)
             if (upperPipes[0].X < - this.GetPipeWidth )
             {
                 upperPipes.RemoveAt(0);
@@ -290,6 +296,8 @@ namespace FlappyBlazorBird.Client.Data
             lock(PrintablePiles)
             {
                 PrintablePiles.Clear();
+                lock(this.upperPipes)
+                lock(this.lowerPipes)
                 for( int i = 0; i< this.upperPipes.Count(); i++ )
                 {
                     var (uPipe, lPipe) = ( this.upperPipes[i], this.lowerPipes[i]);
@@ -331,6 +339,5 @@ namespace FlappyBlazorBird.Client.Data
             };
             return pipe;
         }
-
     }
 }
