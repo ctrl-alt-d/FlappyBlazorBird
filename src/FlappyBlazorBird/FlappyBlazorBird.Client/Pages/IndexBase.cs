@@ -58,7 +58,7 @@ namespace FlappyBlazorBird.Client.Pages
             var toRender = new List<Printable>();
 
             // background
-            var background = new Printable( 0, 0, e.Universe.CurrentBackgroundImage );
+            var background = e.Universe.PrintableBackground;
             toRender.Add(background);
 
             // pipes
@@ -66,12 +66,13 @@ namespace FlappyBlazorBird.Client.Pages
             
             if (MyBird.IsDead || MyBird.CurrentGraceInterval > 0)
             {
-                pipes = pipes.Select(p=>new Printable(Convert.ToInt32(p.X),Convert.ToInt32(p.Y),p.Image,Convert.ToInt32(p.R),0.4) ).ToList();
+                pipes = pipes.Select(p=>new Printable(p.X,p.Y,p.Image,Convert.ToInt32(p.R),0.4, p.GuidKey) ).ToList();
             }
             toRender.AddRange(pipes);
+            
 
             // the base
-            var theBase = new Printable( e.Universe.basex, Convert.ToInt32( Universe.BASEY), Universe.IMAGES["base"]  );
+            var theBase = e.Universe.TheBase;
             toRender.Add(theBase);
 
             // score
@@ -83,24 +84,24 @@ namespace FlappyBlazorBird.Client.Pages
                 if (bird != MyBird)
                 {
                     var otherBirdIndex = bird.IsDead?0:bird.playerIndex;
-                    var otherBird = new Printable( bird.playerx, bird.playery,  bird.player_images[otherBirdIndex] , -bird.visibleRot, opacity: 0.5);
+                    var otherBird = new Printable( bird.playerx, bird.playery,  bird.player_images[otherBirdIndex] , -bird.visibleRot, opacity: 0.5, guidKey: bird.GuidKey);
                     toRender.Add(otherBird);
                 }
             }
 
             // myBird
             var myBirdIndex = MyBird.IsDead?0:MyBird.playerIndex;
-            var ocell = new Printable( MyBird.playerx, MyBird.playery,  MyBird.player_images[myBirdIndex] , -MyBird.visibleRot);
+            var ocell = new Printable( MyBird.playerx, MyBird.playery,  MyBird.player_images[myBirdIndex] , -MyBird.visibleRot, null, MyBird.GuidKey);
             toRender.Add(ocell);
 
             // play again
             if (MyBird.IsDead && MyBird.CurrentPenaltyTime==0)
             {
-                var playAgain = new Printable( (Universe.SCREENWIDTH - 192)/2 , Universe.SCREENHEIGHT/2,  Universe.IMAGES["pressptoplayagain"]);
+                var playAgain = e.Universe.PlayAgain;
                 toRender.Add(playAgain);
             } else if (MyBird.IsDead && MyBird.CurrentPenaltyTime>0)
             {
-                var gameOver = new Printable( (Universe.SCREENWIDTH - 192)/2 , Universe.SCREENHEIGHT/2,  Universe.IMAGES["gameover"]);
+                var gameOver = e.Universe.GameOver;
                 toRender.Add(gameOver);
             } 
 
@@ -127,8 +128,13 @@ namespace FlappyBlazorBird.Client.Pages
         }
 
 
+        private int previousScore = -1;
+        private List<Printable> previousPrintableScore = null;
         private List<Printable> GetPrintableScore(int score)
         {
+            if (score == previousScore) return previousPrintableScore;
+            previousScore=score;
+
             var result = new List<Printable>();
             var scoreDigits = score.ToString().ToCharArray().Select(x=>x-'0');
             var totalWidth = 0;
@@ -138,10 +144,11 @@ namespace FlappyBlazorBird.Client.Pages
             foreach(var digit in scoreDigits)
             {
                 result.Add(
-                    new Printable(Xoffset, Convert.ToInt32( Universe.SCREENHEIGHT * 0.1), Universe.IMAGESS["numbers"][digit])                    
+                    new Printable(Xoffset, Convert.ToInt32( Universe.SCREENHEIGHT * 0.1), Universe.IMAGESS["numbers"][digit],null,null,Guid.NewGuid())
                 );
                 Xoffset += Universe.GetDigitWidth(digit);
             }
+            previousPrintableScore = result;
             return result;
         }
 
@@ -167,9 +174,6 @@ namespace FlappyBlazorBird.Client.Pages
         }
 
         #endregion
-
-
-
 
     }
 

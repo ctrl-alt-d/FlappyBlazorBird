@@ -99,12 +99,15 @@ img {
 }
 
 .unselectable {
+    pointer-events: none;
+    border: 0; padding: 0; margin: 0;
     user-drag: none; 
     user-select: none;
     -moz-user-select: none;
     -webkit-user-drag: none;
     -webkit-user-select: none;
     -ms-user-select: none;
+    overflow: hidden;
   }
 
 .statistics {
@@ -132,4 +135,156 @@ img {
     font-size: 7px;
     font-family: "Monospace";
 }
+
+
+/* bird */
+.redbird-upflap {
+    background-image: url("/assets/sprites/redbird-upflap.png");
+    width: 34px;
+    height: 24px;
+}
+.redbird-midflap {
+    background-image: url("/assets/sprites/redbird-midflap.png");
+    width: 34px;
+    height: 24px;
+}
+.redbird-downflap {
+    background-image: url("/assets/sprites/redbird-downflap.png");
+    width: 34px;
+    height: 24px;
+}
+
+
+/* blue bird */
+.bluebird-upflap {
+    background-image: url("/assets/sprites/bluebird-upflap.png");
+    width: 34px;
+    height: 24px;
+}
+.bluebird-midflap {
+    background-image: url("/assets/sprites/bluebird-midflap.png");
+    width: 34px;
+    height: 24px;
+}
+.bluebird-downflap {
+    background-image: url("/assets/sprites/bluebird-downflap.png");
+    width: 34px;
+    height: 24px;
+}
+
+/* yellow bird */
+.yellowbird-upflap {
+    background-image: url("/assets/sprites/yellowbird-upflap.png");
+    width: 34px;
+    height: 24px;
+}
+.yellowbird-midflap {
+    background-image: url("/assets/sprites/yellowbird-midflap.png");
+    width: 34px;
+    height: 24px;
+}
+.yellowbird-downflap {
+    background-image: url("/assets/sprites/yellowbird-downflap.png");
+    width: 34px;
+    height: 24px;
+}
+
+/* base */
+.base {
+    background-image: url("/assets/sprites/base.png");
+    width: 336px;
+    height: 112px;
+}
+
+/* background */
+.background-day {
+    background-image: url("/assets/sprites/background-day.png");
+    width: 288px;
+    height: 512px;
+}
+.background-night {
+    background-image: url("/assets/sprites/background-night.png");
+    width: 288px;
+    height: 512px;
+}
+
+/* game over */
+.gameover {
+    background-image: url("/assets/sprites/gameover.png");
+    width: 192px;
+    height: 42px;
+}
+
+/* press p */
+.pressptoplayagain {
+    background-image: url("/assets/sprites/pressptoplayagain.png");
+    width: 192px;
+    height: 100px;
+}
+
+/* pipe */
+.pipe-green {
+    background-image: url("/assets/sprites/pipe-green.png");
+    width: 52px;
+    height: 320px;
+}
+.pipe-red {
+    background-image: url("/assets/sprites/pipe-red.png");
+    width: 52px;
+    height: 320px;
+}
+
+/* numbers */
+.number-0 {
+    background-image: url("/assets/sprites/0.png");
+    width: 24px;
+    height: 36px;
+}
+.number-1 {
+    background-image: url("/assets/sprites/1.png");
+    width: 16px;
+    height: 36px;
+}
+.number-2 {
+    background-image: url("/assets/sprites/2.png");
+    width: 24px;
+    height: 36px;
+}
+.number-3 {
+    background-image: url("/assets/sprites/3.png");
+    width: 24px;
+    height: 36px;
+}
+.number-4 {
+    background-image: url("/assets/sprites/4.png");
+    width: 24px;
+    height: 36px;
+}
+.number-5 {
+    background-image: url("/assets/sprites/5.png");
+    width: 24px;
+    height: 36px;
+}
+.number-6 {
+    background-image: url("/assets/sprites/6.png");
+    width: 24px;
+    height: 36px;
+}
+.number-7 {
+    background-image: url("/assets/sprites/7.png");
+    width: 24px;
+    height: 36px;
+}
+.number-8 {
+    background-image: url("/assets/sprites/8.png");
+    width: 24px;
+    height: 36px;
+}
+.number-9 {
+    background-image: url("/assets/sprites/9.png");
+    width: 24px;
+    height: 36px;
+}
+
+
 

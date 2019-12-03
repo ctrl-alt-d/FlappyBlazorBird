@@ -58,13 +58,14 @@ namespace FlappyBlazorBird.Client.Data
         public readonly List<Bird> Players = new List<Bird>();
         public readonly List<Printable> PrintablePiles = new List<Printable>();
 
+
         #region Event
         public static event EventHandler<TicEventArgs> Tic; 
 
         protected virtual void OnTic()
         {
             EventHandler<TicEventArgs> handler = Tic;
-            var e = new TicEventArgs(Players.ToList(), PrintablePiles.ToList(),  this);
+            var e = new TicEventArgs(Players.ToList(), PrintablePiles.ToList(), this);
             handler?.Invoke(this, e);
         }
         #endregion
@@ -74,8 +75,8 @@ namespace FlappyBlazorBird.Client.Data
         #endregion
 
         public int pipeVelX = -4;
-        public List<Dictionary<string,int>> upperPipes;
-        public List<Dictionary<string,int>> lowerPipes;
+        public List<PipePart> upperPipes;
+        public List<PipePart> lowerPipes;
             
         public const int FPS = 30;
         public int FPS_DELAY => Convert.ToInt32( 1000.0 / FPS );
@@ -91,8 +92,63 @@ namespace FlappyBlazorBird.Client.Data
         //# image, sound and hitmask  dicts
         //IMAGES, SOUNDS, HITMASKS = {}, {}, {}
 
-        public string CurrentBackgroundImage {get; set; } = BACKGROUNDS_LIST[0];
+        // background
+        public int CurrentBackgroundImageIndex = 0;
+        public string CurrentBackgroundImage => BACKGROUNDS_LIST[CurrentBackgroundImageIndex];
         public override string Image => CurrentBackgroundImage;
+        private Printable printableBackground;
+        public Printable PrintableBackground 
+        {
+            get
+            {
+                if (printableBackground == null)
+                {
+                    printableBackground = new Printable( 0, 0, CurrentBackgroundImage );
+                }
+                return printableBackground;
+            }
+        }
+
+        private Printable theBase;
+        public Printable TheBase
+        {
+            get
+            {
+                if (theBase == null)
+                {
+                    theBase = new Printable( this.basex, Convert.ToInt32( Universe.BASEY), Universe.IMAGES["base"]  );
+                }
+                return theBase;
+            }
+        }
+
+        private Printable playAgain;
+        public Printable PlayAgain
+        {
+            get
+            {
+                if (playAgain == null)
+                {
+                    playAgain = new Printable( (Universe.SCREENWIDTH - 192)/2 , Universe.SCREENHEIGHT/2,  Universe.IMAGES["pressptoplayagain"]);
+                }
+                return playAgain;
+            }
+        }
+
+        private Printable gameOver;
+        public Printable GameOver
+        {
+            get
+            {
+                if (gameOver == null)
+                {
+                    gameOver = new Printable( (Universe.SCREENWIDTH - 192)/2 , Universe.SCREENHEIGHT/2,  Universe.IMAGES["gameover"]);
+                }
+                return gameOver;
+            }
+        }
+
+        // other
         public int GetPlayerHeight => 24;
 
         public int GetBaseWidth => 336;
@@ -108,25 +164,25 @@ namespace FlappyBlazorBird.Client.Data
         public static Dictionary<string, string[]> IMAGESS =new Dictionary<string, string[]>() 
         {
             ["numbers"] = new [] {
-                "assets/sprites/0.png",
-                "assets/sprites/1.png",
-                "assets/sprites/2.png",
-                "assets/sprites/3.png",
-                "assets/sprites/4.png",
-                "assets/sprites/5.png",
-                "assets/sprites/6.png",
-                "assets/sprites/7.png",
-                "assets/sprites/8.png",
-                "assets/sprites/9.png",
+                "number-0",
+                "number-1",
+                "number-2",
+                "number-3",
+                "number-4",
+                "number-5",
+                "number-6",
+                "number-7",
+                "number-8",
+                "number-9",
             },            
         };
 
         public static Dictionary<string, string> IMAGES = new Dictionary<string, string>() 
         {
-            ["gameover"] ="assets/sprites/gameover.png",
-            ["message"] ="assets/sprites/message.png",
-            ["base"] ="assets/sprites/base.png",
-            ["pressptoplayagain"] = "assets/sprites/pressptoplayagain.png",
+            ["gameover"] ="gameover",
+            ["message"] ="message",
+            ["base"] ="base",
+            ["pressptoplayagain"] = "pressptoplayagain",
         };
 
         public static Dictionary<string, string> SOUNDS = new Dictionary<string, string>() 
@@ -144,42 +200,41 @@ namespace FlappyBlazorBird.Client.Data
             // red bird
             new []
             {
-                "assets/sprites/redbird-upflap.png",
-                "assets/sprites/redbird-midflap.png",
-                "assets/sprites/redbird-downflap.png",
+                "redbird-upflap",
+                "redbird-midflap",
+                "redbird-downflap",
             },
 
             // blue bird
             new []
             {
-                "assets/sprites/bluebird-upflap.png",
-                "assets/sprites/bluebird-midflap.png",
-                "assets/sprites/bluebird-downflap.png",
+                "bluebird-upflap",
+                "bluebird-midflap",
+                "bluebird-downflap",
             },
 
             // yellow bird
             new []
             {
-                "assets/sprites/yellowbird-upflap.png",
-                "assets/sprites/yellowbird-midflap.png",
-                "assets/sprites/yellowbird-downflap.png",
+                "yellowbird-upflap",
+                "yellowbird-midflap",
+                "yellowbird-downflap",
             },
-
         };
 
 
         // list of backgrounds
         public static string[] BACKGROUNDS_LIST = new []
         {
-            "assets/sprites/background-day.png",
-            "assets/sprites/background-night.png",
+            "background-day",
+            "background-night",
         };
 
         // list of pipes
         public static string[] PIPES_LIST = new []
         {
-            "assets/sprites/pipe-green.png",
-            "assets/sprites/pipe-red.png",
+            "pipe-green",
+            "pipe-red",
         };
 
         public int GetDigitWidth(int digit)
@@ -188,40 +243,20 @@ namespace FlappyBlazorBird.Client.Data
         }
 
 
-        public ( List<Dictionary<string,int>>, List<Dictionary<string,int>> ) GetNewPipes()
+        public ( List<PipePart>, List<PipePart> ) GetNewPipes()
         {
             var newPipe1 = getRandomPipe();
             var newPipe2 = getRandomPipe();
 
-            // list of upper pipes
-            var upperPipes = new List<Dictionary<string,int>>()
-            {
-                new Dictionary<string,int>() 
-                {
-                    ["x"] = Universe.SCREENWIDTH + 250, 
-                    ["y"] = newPipe1[0]["y"] 
-                },  
-                new Dictionary<string,int>() 
-                {
-                    ["x"] = Universe.SCREENWIDTH + 250 + (Universe.SCREENWIDTH / 2), 
-                    ["y"] = newPipe2[0]["y"] 
-                }, 
-            };
+            newPipe1[0].X = Universe.SCREENWIDTH + 250;
+            newPipe1[1].X = Universe.SCREENWIDTH + 250;
 
-            // list of lowerpipe
-            var lowerPipes = new List<Dictionary<string,int>>()
-            {
-                new Dictionary<string,int>() 
-                {
-                    ["x"] = Universe.SCREENWIDTH + 250, 
-                    ["y"] = newPipe1[1]["y"] 
-                },  
-                new Dictionary<string,int>() 
-                {
-                    ["x"] = Universe.SCREENWIDTH + 250 + (Universe.SCREENWIDTH / 2), 
-                    ["y"] = newPipe2[1]["y"] 
-                }, 
-            };
+            newPipe2[0].X = Universe.SCREENWIDTH + 250 + (Universe.SCREENWIDTH / 2);
+            newPipe2[1].X = Universe.SCREENWIDTH + 250 + (Universe.SCREENWIDTH / 2);
+
+            // list of upper pipes
+            var upperPipes = new List<PipePart>() { newPipe1[0], newPipe2[0] };
+            var lowerPipes = new List<PipePart>() { newPipe1[1], newPipe2[1] };
 
             return (upperPipes, lowerPipes);
         }
@@ -232,12 +267,12 @@ namespace FlappyBlazorBird.Client.Data
             for( int i = 0; i< this.upperPipes.Count(); i++ )
             {
                 var (uPipe, lPipe) = ( this.upperPipes[i], this.lowerPipes[i]);
-                uPipe["x"] += this.pipeVelX;
-                lPipe["x"] += this.pipeVelX;
+                uPipe.X += this.pipeVelX;
+                lPipe.X += this.pipeVelX;
             }
 
             // add new pipe when first pipe is about to touch left of screen
-            if ( !upperPipes.Any() || (  0 < upperPipes[0]["x"] &&  upperPipes[0]["x"] < 5 ) )
+            if ( !upperPipes.Any() || (  0 < upperPipes[0].X &&  upperPipes[0].X < 5 ) )
             {
                 var newPipe = getRandomPipe();
                 upperPipes.Add(newPipe[0]);
@@ -245,42 +280,41 @@ namespace FlappyBlazorBird.Client.Data
             }
 
             // remove first pipe if its out of the screen
-            if (upperPipes[0]["x"] < - this.GetPipeWidth )
+            if (upperPipes[0].X < - this.GetPipeWidth )
             {
                 upperPipes.RemoveAt(0);
                 lowerPipes.RemoveAt(0);
             }   
 
             //update pritable pipes
+            var auxListPrintable = new List<Printable>();
+            for( int i = 0; i< this.upperPipes.Count(); i++ )
+            {
+                var (uPipe, lPipe) = ( this.upperPipes[i], this.lowerPipes[i]);
+
+                auxListPrintable.Add(
+                    new Printable( uPipe.X, uPipe.Y, Universe.PIPES_LIST[0], -180,null,uPipe.GuidKey )
+                );
+                auxListPrintable.Add(
+                    new Printable( lPipe.X, lPipe.Y, Universe.PIPES_LIST[1],null, null, lPipe.GuidKey )
+                );
+            }            
             lock(PrintablePiles)
             {
                 PrintablePiles.Clear();
-                for( int i = 0; i< this.upperPipes.Count(); i++ )
-                {
-                    var (uPipe, lPipe) = ( this.upperPipes[i], this.lowerPipes[i]);
-
-                    PrintablePiles.Add(
-                        new Printable( uPipe["x"], uPipe["y"], Universe.PIPES_LIST[0], -180 )
-                    );
-                    PrintablePiles.Add(
-                        new Printable( lPipe["x"], lPipe["y"], Universe.PIPES_LIST[1] )
-                    );
-                }            
+                PrintablePiles.AddRange(auxListPrintable);
             }
         }
 
         internal void PleaseRestart()
         {
 
-            lock(Players) 
             if (Players.All(p=>p.IsDead)) 
-            lock(upperPipes) 
-            lock(lowerPipes) 
             (upperPipes, lowerPipes) = GetNewPipes();
 
         }
 
-        private Dictionary<string,int>[] getRandomPipe()
+        private List<PipePart> getRandomPipe()
         {
             //returns a randomly generated pipe
             // y of gap between upper and lower pipe
@@ -290,12 +324,11 @@ namespace FlappyBlazorBird.Client.Data
             gapY += Convert.ToInt32(Universe.BASEY * 0.2);
             var pipeHeight = this.GetPipeHeight;
             var pipeX = Universe.SCREENWIDTH + 10;
-            var pipe = new [] {
-                new Dictionary<string,int>() {["x"] = pipeX, ["y"] = gapY - pipeHeight },  // upper pipe
-                new Dictionary<string,int>() {["x"] = pipeX, ["y"] = gapY + Universe.PIPEGAPSIZE }, // lower pipe
+            var pipe = new List<PipePart>() {
+                new PipePart() {X = pipeX, Y = gapY - pipeHeight },  // upper pipe
+                new PipePart() {X = pipeX, Y = gapY + Universe.PIPEGAPSIZE }, // lower pipe
             };
             return pipe;
         }
-
     }
 }
