@@ -264,8 +264,6 @@ namespace FlappyBlazorBird.Client.Data
         private void MovePipes()
         {
             // move pipes to left
-            lock(this.upperPipes)
-            lock(this.lowerPipes)
             for( int i = 0; i< this.upperPipes.Count(); i++ )
             {
                 var (uPipe, lPipe) = ( this.upperPipes[i], this.lowerPipes[i]);
@@ -274,8 +272,6 @@ namespace FlappyBlazorBird.Client.Data
             }
 
             // add new pipe when first pipe is about to touch left of screen
-            lock(this.upperPipes)
-            lock(this.lowerPipes)
             if ( !upperPipes.Any() || (  0 < upperPipes[0].X &&  upperPipes[0].X < 5 ) )
             {
                 var newPipe = getRandomPipe();
@@ -284,8 +280,6 @@ namespace FlappyBlazorBird.Client.Data
             }
 
             // remove first pipe if its out of the screen
-            lock(this.upperPipes)
-            lock(this.lowerPipes)
             if (upperPipes[0].X < - this.GetPipeWidth )
             {
                 upperPipes.RemoveAt(0);
@@ -293,32 +287,29 @@ namespace FlappyBlazorBird.Client.Data
             }   
 
             //update pritable pipes
+            var auxListPrintable = new List<Printable>();
+            for( int i = 0; i< this.upperPipes.Count(); i++ )
+            {
+                var (uPipe, lPipe) = ( this.upperPipes[i], this.lowerPipes[i]);
+
+                auxListPrintable.Add(
+                    new Printable( uPipe.X, uPipe.Y, Universe.PIPES_LIST[0], -180,null,uPipe.GuidKey )
+                );
+                auxListPrintable.Add(
+                    new Printable( lPipe.X, lPipe.Y, Universe.PIPES_LIST[1],null, null, lPipe.GuidKey )
+                );
+            }            
             lock(PrintablePiles)
             {
                 PrintablePiles.Clear();
-                lock(this.upperPipes)
-                lock(this.lowerPipes)
-                for( int i = 0; i< this.upperPipes.Count(); i++ )
-                {
-                    var (uPipe, lPipe) = ( this.upperPipes[i], this.lowerPipes[i]);
-
-                    PrintablePiles.Add(
-                        new Printable( uPipe.X, uPipe.Y, Universe.PIPES_LIST[0], -180,null,uPipe.GuidKey )
-                    );
-                    PrintablePiles.Add(
-                        new Printable( lPipe.X, lPipe.Y, Universe.PIPES_LIST[1],null, null, lPipe.GuidKey )
-                    );
-                }            
+                PrintablePiles.AddRange(auxListPrintable);
             }
         }
 
         internal void PleaseRestart()
         {
 
-            lock(Players) 
             if (Players.All(p=>p.IsDead)) 
-            lock(upperPipes) 
-            lock(lowerPipes) 
             (upperPipes, lowerPipes) = GetNewPipes();
 
         }

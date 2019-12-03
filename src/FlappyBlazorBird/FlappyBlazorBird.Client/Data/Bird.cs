@@ -58,10 +58,10 @@ namespace FlappyBlazorBird.Client.Data
         public int visibleRot;
         public bool Tic()
         {
-
-            lock(KeyPressed) while (KeyPressed.Any())
+            var keysToProcess = new List<KeyboardEventArgs>(KeyPressed);
+            KeyPressed.Clear();
+            foreach(var k in keysToProcess)
             {
-                var k = KeyPressed.Dequeue();
                 if (!IsDead && (k.Key == "ArrowUp" || k.Key == " "  ))
                 {
                     if (playery > -2 * Universe.GetPlayerHeight)
@@ -88,8 +88,7 @@ namespace FlappyBlazorBird.Client.Data
 
             // check for score
             if (!IsDead && CurrentGraceInterval==0) 
-            lock (Universe.upperPipes)
-            foreach(var pipe in Universe.upperPipes)
+            foreach(var pipe in Universe.upperPipes.ToList())
             {
                 var pipeMidPos = pipe.X + Universe.GetPipeWidth / 2;
                 if (pipeMidPos <= playerMidPos && playerMidPos < pipeMidPos + 4)
@@ -164,8 +163,6 @@ namespace FlappyBlazorBird.Client.Data
                 var playerUpY=playery;
                 var playerLoY=Convert.ToInt32( playery+Universe.GetPlayerHeight*0.8 );
                 //foreach( var (uPipe, lPipe) in upperPipes.Zip(lowerPipes))
-                lock (Universe.upperPipes)
-                lock (Universe.lowerPipes)
                 for( int i = 0; i< Universe.upperPipes.Count(); i++ )
                 {                    
                     var (uPipe, lPipe) = ( Universe.upperPipes[i], Universe.lowerPipes[i]);

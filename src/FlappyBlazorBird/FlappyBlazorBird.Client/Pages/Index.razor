@@ -1,12 +1,11 @@
 ﻿@inherits IndexBase
 @using FlappyBlazorBird.Client.Data
 @page "/"
-@lock(ToRender) 
-{
+@{
     <div class="outer-div" @ref="OuterDiv" @onkeydown="@KeyDown" tabindex="0" @onclick="@OnClick" >         
         <div class="top-div"></div>
         <div class="game-div">
-            @foreach (var printable in ToRender)
+            @foreach (var printable in ToRender.ToList())
             {
                 <div id="@printable.Key" @key="printable.Key" class="@printable.CssClass" style="@printable.CssStyle" draggable="false" dragstart="false;"> </div>
             }                
