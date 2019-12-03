@@ -6,10 +6,9 @@
     <div class="outer-div" @ref="OuterDiv" @onkeydown="@KeyDown" tabindex="0" @onclick="@OnClick" >         
         <div class="top-div"></div>
         <div class="game-div">
-            @foreach (var p in ToRender)
+            @foreach (var printable in ToRender)
             {
-                var printable = Printable.Clone(p);
-                <img src="@printable.Image" style="@printable.CssStyle" draggable="false" dragstart="false;" class="unselectable"/>    
+                <div id="@printable.Key" @key="printable.Key" class="@printable.CssClass" style="@printable.CssStyle" draggable="false" dragstart="false;"> </div>
             }                
             <div class="statistics">
                 <ul>
