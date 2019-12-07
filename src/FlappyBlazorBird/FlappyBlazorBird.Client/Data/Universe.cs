@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -13,28 +14,50 @@ namespace FlappyBlazorBird.Client.Data
         {
             (upperPipes, lowerPipes) = GetNewPipes();
             StartedAt = DateTime.Now.ToString();
-            MainLoop();
-        }
-
+        }        
         public int CurrentFps = 0;
         public string StartedAt;
         public long TotalSessions = 0;
         public int MaxScore = 0;
+
+        public bool IsRunning {get; protected set; }= false;
         public async void MainLoop()
         {
-            while (true)
-            {
-                System.Diagnostics.Stopwatch stopWatch = new System.Diagnostics.Stopwatch();
-                stopWatch.Stop();                
+            IsRunning=true;
+            Stopwatch stopWatch = new Stopwatch();
+            while (IsRunning)
+            {                
+                stopWatch.Reset();                
                 stopWatch.Start();
                 this.Recalcula();
-                this.OnTic();                
-                var d = this.FPS_DELAY - stopWatch.Elapsed.Milliseconds;
+                this.OnTic();     
+                stopWatch.Stop();           
+                var ms = stopWatch.Elapsed.TotalMilliseconds;
+                var d = Convert.ToInt32( this.FPS_DELAY - ms );
                 if (d<=1) d = 1;
                 await Task.Delay(d);                
-                CurrentFps = Convert.ToInt32(1000.0 / stopWatch.Elapsed.Milliseconds);
+                CurrentFps = Convert.ToInt32(1000.0 / d);
             }        
         }
+        internal void PleaseStop()
+        {
+            if (Players.All(p=>( p.IsDead  && p.CurrentPenaltyTime==0)))
+            {
+                IsRunning=false;
+            }
+        }
+        internal void PleaseRestart()
+        {
+            if (!IsRunning)
+            {
+                MainLoop();
+            }
+            if (Players.All(p=>p.IsDead && p.CurrentPenaltyTime==0)) 
+            {                
+                (upperPipes, lowerPipes) = GetNewPipes();
+            }
+        }
+
         public int loopIter = 0;
         public int basex = 0;
         public int baseShift => this.GetBaseWidth - this.GetBackgroundWidth;
@@ -304,14 +327,6 @@ namespace FlappyBlazorBird.Client.Data
                 PrintablePiles.Clear();
                 PrintablePiles.AddRange(auxListPrintable);
             }
-        }
-
-        internal void PleaseRestart()
-        {
-
-            if (Players.All(p=>p.IsDead)) 
-            (upperPipes, lowerPipes) = GetNewPipes();
-
         }
 
         private List<PipePart> getRandomPipe()

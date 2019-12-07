@@ -30,13 +30,26 @@ namespace FlappyBlazorBird.Client.Pages
 
         protected void KeyDown(KeyboardEventArgs e)
         {
-            MyBird.KeyPressed.Enqueue(e);
+            if (e.Key == " " || e.Key == "p" || e.Key == "P" )
+            {
+                MyBird.KeyPressed.Enqueue(e);
+                CheckIsRunning();                
+            }
         }
         protected void OnClick()
         {
             var e = new KeyboardEventArgs();
             e.Key = MyBird.IsDead?"p":"ArrowUp";
             MyBird.KeyPressed.Enqueue(e);
+            CheckIsRunning();
+        }
+
+        protected void CheckIsRunning()
+        {
+            if (MyBird.IsDead)
+            {
+                Universe.PleaseRestart();
+            }
         }
 
         protected ElementReference OuterDiv;
@@ -99,6 +112,7 @@ namespace FlappyBlazorBird.Client.Pages
             {
                 var playAgain = e.Universe.PlayAgain;
                 toRender.Add(playAgain);
+                Universe.PleaseStop();
             } else if (MyBird.IsDead && MyBird.CurrentPenaltyTime>0)
             {
                 var gameOver = e.Universe.GameOver;
