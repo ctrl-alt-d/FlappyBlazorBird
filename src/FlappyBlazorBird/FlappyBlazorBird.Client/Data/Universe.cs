@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 // THIS CODE IS "DIRECT TRANSLATION" FROM PYTHON PYGAME TO C# BLAZOR. REFACTOR PENDING
@@ -21,12 +22,25 @@ namespace FlappyBlazorBird.Client.Data
         public int MaxScore = 0;
 
         public bool IsRunning {get; protected set; }= false;
+        private static object looker = new object();
+        private int minTics = 0;
         public async void MainLoop()
         {
-            IsRunning=true;
-            Stopwatch stopWatch = new Stopwatch();
-            while (IsRunning)
+
+            lock(looker)
+            if (IsRunning || minTics > 0) 
+            {
+                return;
+            }
+            else{
+                IsRunning=true;
+                System.Console.WriteLine(  "Wakeup"  );
+            }
+
+            Stopwatch stopWatch = new Stopwatch();            
+            while (IsRunning || minTics > 0)
             {                
+                minTics=IsRunning?10:minTics-1;
                 stopWatch.Reset();                
                 stopWatch.Start();
                 this.Recalcula();
@@ -39,6 +53,10 @@ namespace FlappyBlazorBird.Client.Data
                 CurrentFps = Convert.ToInt32(1000.0 / d);
             }        
         }
+        public void PleaseWeakUp()
+        {
+            MainLoop();
+        }
         internal void PleaseStop()
         {
             if (Players.All(p=>( p.IsDead  && p.CurrentPenaltyTime==0)))
@@ -48,10 +66,6 @@ namespace FlappyBlazorBird.Client.Data
         }
         internal void PleaseRestart()
         {
-            if (!IsRunning)
-            {
-                MainLoop();
-            }
             if (Players.All(p=>p.IsDead && p.CurrentPenaltyTime==0)) 
             {                
                 (upperPipes, lowerPipes) = GetNewPipes();
