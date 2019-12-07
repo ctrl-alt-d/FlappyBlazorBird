@@ -27,16 +27,15 @@ namespace FlappyBlazorBird.Client.Data
         public async void MainLoop()
         {
             lock(looker) 
-            if (minTics > 0) 
+            if (IsRunning)
+            {
+                return;
+            }
+            else if (minTics > 0) 
             {
                 IsRunning = true;
                 return;
             }
-            else{
-                IsRunning=true;
-                System.Console.WriteLine(  "Wakeup"  );
-            }
-
             Stopwatch stopWatch = new Stopwatch();            
             while (IsRunning || minTics > 0)
             {                

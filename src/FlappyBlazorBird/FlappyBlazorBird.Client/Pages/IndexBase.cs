@@ -49,6 +49,7 @@ namespace FlappyBlazorBird.Client.Pages
             if (MyBird.IsDead)
             {
                 Universe.PleaseWeakUp();
+                PleaseStopSent = false;
             }
         }
 
@@ -62,6 +63,7 @@ namespace FlappyBlazorBird.Client.Pages
         }
 
         protected Statistics Statistics = new Statistics() {};
+        protected bool PleaseStopSent = false;
 
 
         protected List<Printable> ToRender = new List<Printable>();
@@ -112,7 +114,11 @@ namespace FlappyBlazorBird.Client.Pages
             {
                 var playAgain = e.Universe.PlayAgain;
                 toRender.Add(playAgain);
-                Universe.PleaseStop();
+                if (!PleaseStopSent) 
+                {                  
+                    PleaseStopSent = true;  
+                    Universe.PleaseStop();
+                }
             } else if (MyBird.IsDead && MyBird.CurrentPenaltyTime>0)
             {
                 var gameOver = e.Universe.GameOver;
@@ -139,6 +145,7 @@ namespace FlappyBlazorBird.Client.Pages
             {
                 await JSRuntime.InvokeVoidAsync("SetFocusToElement", OuterDiv);
                 Universe.PleaseWeakUp();
+                PleaseStopSent = false;
             }
         }
 
