@@ -44,7 +44,7 @@ namespace FlappyBlazorBird.Client.Data
         public int  playerRotThr  =  20   ;// rotation threshold
         public int  playerFlapAcc =  -9   ;// players speed on flapping
         public bool  playerFlapped = false ;// True when player flaps
-
+        public bool stopSent = false;
         public Random random = new Random();
         public int randPlayer = 0;
         public string[] player_images => new [] {
@@ -70,7 +70,7 @@ namespace FlappyBlazorBird.Client.Data
                         playerFlapped = true;
                         //SOUNDS['wing'].play()
                     }
-                } else if (IsDead && CurrentPenaltyTime==0 && ( k.Key == "P" || k.Key == "p") )
+                } else if (IsDead && CurrentPenaltyTime==0 && ( k.Key == "P" || k.Key == "p" || k.Key == "ArrowUp" || k.Key == " ") )
                 {
                     InitializePlayer();
                 }
@@ -133,7 +133,6 @@ namespace FlappyBlazorBird.Client.Data
                 playerx += Universe.pipeVelX;
                 if (playerx < -100) playerx = -100;
             }
-
 
             if ((Universe.loopIter + 1) % 3 == 0)
             {
@@ -205,6 +204,7 @@ namespace FlappyBlazorBird.Client.Data
             Universe.PleaseRestart();
             CurrentGraceInterval = GraceInterval;
             IsDead = false;
+            stopSent = false;
         }
     }  
 }
