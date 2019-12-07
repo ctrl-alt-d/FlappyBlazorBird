@@ -36,6 +36,8 @@ namespace FlappyBlazorBird.Client.Data
                 IsRunning = true;
                 return;
             }
+            
+            IsRunning = true;
             Stopwatch stopWatch = new Stopwatch();            
             while (IsRunning || minTics > 0)
             {                
