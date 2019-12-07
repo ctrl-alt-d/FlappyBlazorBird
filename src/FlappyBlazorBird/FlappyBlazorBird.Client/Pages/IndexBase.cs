@@ -32,23 +32,23 @@ namespace FlappyBlazorBird.Client.Pages
         {
             if (e.Key == " " || e.Key == "p" || e.Key == "P" )
             {
-                MyBird.KeyPressed.Enqueue(e);
                 CheckIsRunning();                
+                MyBird.KeyPressed.Enqueue(e);                
             }
         }
         protected void OnClick()
         {
+            CheckIsRunning();
             var e = new KeyboardEventArgs();
             e.Key = MyBird.IsDead?"p":"ArrowUp";
-            MyBird.KeyPressed.Enqueue(e);
-            CheckIsRunning();
+            MyBird.KeyPressed.Enqueue(e);            
         }
 
         protected void CheckIsRunning()
         {
             if (MyBird.IsDead)
             {
-                Universe.PleaseRestart();
+                Universe.PleaseWeakUp();
             }
         }
 
@@ -138,9 +138,9 @@ namespace FlappyBlazorBird.Client.Pages
             if (firstRender)
             {
                 await JSRuntime.InvokeVoidAsync("SetFocusToElement", OuterDiv);
+                Universe.PleaseWeakUp();
             }
         }
-
 
         private int previousScore = -1;
         private List<Printable> previousPrintableScore = null;
