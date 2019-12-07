@@ -26,10 +26,10 @@ namespace FlappyBlazorBird.Client.Data
         private int minTics = 0;
         public async void MainLoop()
         {
-
-            lock(looker)
-            if (IsRunning || minTics > 0) 
+            lock(looker) 
+            if (minTics > 0) 
             {
+                IsRunning = true;
                 return;
             }
             else{
