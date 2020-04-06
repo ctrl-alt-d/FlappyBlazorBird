@@ -7,6 +7,7 @@ fi
 
 dotnet publish -c release src/FlappyBlazorBird/FlappyBlazorBird.Client
 rm -ifr ./dist
-mv ./src/FlappyBlazorBird/FlappyBlazorBird.Client/bin/release/netstandard2.0/publish/FlappyBlazorBird.Client/dist .
+mkdir ./dist
+mv ./src/FlappyBlazorBird/FlappyBlazorBird.Client/bin/release/netstandard2.1/publish ./dist
 
 echo "done"
