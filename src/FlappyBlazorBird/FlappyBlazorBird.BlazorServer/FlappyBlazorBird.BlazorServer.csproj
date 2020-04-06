@@ -1,5 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
+  <PropertyGroup>
+    <DisableImplicitComponentsAnalyzers>true</DisableImplicitComponentsAnalyzers>
+  </PropertyGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\FlappyBlazorBird.Client\FlappyBlazorBird.Client.csproj" />
   </ItemGroup>
