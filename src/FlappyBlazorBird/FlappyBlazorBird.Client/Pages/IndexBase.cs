@@ -38,6 +38,7 @@ namespace FlappyBlazorBird.Client.Pages
         }
         protected void OnClick()
         {
+
             CheckIsRunning();
             var e = new KeyboardEventArgs();
             e.Key = MyBird.IsDead?"p":"ArrowUp";
@@ -54,12 +55,23 @@ namespace FlappyBlazorBird.Client.Pages
         }
 
         protected ElementReference OuterDiv;
-        protected Bird MyBird;
+        protected Bird MyBird = null;
 
         protected override void OnInitialized()
         {
+        }
+
+        protected bool MyBirdIsSet = false;
+        protected string birdname {set; get;} = "unnamed";
+        protected async Task OnNickIsSet()
+        {
             MyBird = new Bird(Universe);
-            Universe.Tic += Render;
+            MyBird.Name = birdname;
+
+            MyBirdIsSet = true;          
+            Universe.PleaseWeakUp();
+            Universe.Tic += Render;            
+            PleaseStopSent = false;  
         }
 
         protected Statistics Statistics = new Statistics() {};
@@ -137,15 +149,17 @@ namespace FlappyBlazorBird.Client.Pages
             }
             
             InvokeAsync( StateHasChanged );
+            GoToSetFocus = true;
         }
 
+        private bool GoToSetFocus = false;
+        private bool GoToSetFocusAlreadySet = false;
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            if (firstRender)
+            if (GoToSetFocus && !GoToSetFocusAlreadySet)
             {
                 await JSRuntime.InvokeVoidAsync("SetFocusToElement", OuterDiv);
-                Universe.PleaseWeakUp();
-                PleaseStopSent = false;
+                GoToSetFocusAlreadySet = true;
             }
         }
 
