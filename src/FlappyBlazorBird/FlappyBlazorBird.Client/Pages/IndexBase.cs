@@ -21,6 +21,7 @@ namespace FlappyBlazorBird.Client.Pages
         public string startedAt;
 
         public int maxScore ;
+        public string maxScorePlayer ="** none **";
     }
 
     public class IndexBase: ComponentBase, IDisposable
@@ -38,6 +39,7 @@ namespace FlappyBlazorBird.Client.Pages
         }
         protected void OnClick()
         {
+
             CheckIsRunning();
             var e = new KeyboardEventArgs();
             e.Key = MyBird.IsDead?"p":"ArrowUp";
@@ -54,12 +56,26 @@ namespace FlappyBlazorBird.Client.Pages
         }
 
         protected ElementReference OuterDiv;
-        protected Bird MyBird;
+        protected Bird MyBird = null;
 
         protected override void OnInitialized()
         {
+        }
+
+        protected bool MyBirdIsSet = false;
+        protected string birdname {set; get;} = "";
+
+        protected void OnNickIsSet()
+        {
+            if (string.IsNullOrWhiteSpace(birdname)) return;
+
             MyBird = new Bird(Universe);
-            Universe.Tic += Render;
+            MyBird.Name = birdname;
+
+            MyBirdIsSet = true;          
+            Universe.PleaseWeakUp();
+            Universe.Tic += Render;            
+            PleaseStopSent = false;  
         }
 
         protected Statistics Statistics = new Statistics() {};
@@ -67,6 +83,7 @@ namespace FlappyBlazorBird.Client.Pages
 
 
         protected List<Printable> ToRender = new List<Printable>();
+        protected List<Printable> Firsts = new List<Printable>();
 
         private void Render(object sender, TicEventArgs e)
         {
@@ -104,6 +121,8 @@ namespace FlappyBlazorBird.Client.Pages
                 }
             }
 
+            Firsts = e.Firsts.ToList();
+
             // myBird
             var myBirdIndex = MyBird.IsDead?0:MyBird.playerIndex;
             var ocell = new Printable( MyBird.playerx, MyBird.playery,  MyBird.player_images[myBirdIndex] , -MyBird.visibleRot, null, MyBird.GuidKey);
@@ -130,6 +149,7 @@ namespace FlappyBlazorBird.Client.Pages
             Statistics.totalSessions = Universe.TotalSessions.ToString();
             Statistics.startedAt = Universe.StartedAt;
             Statistics.maxScore = Universe.MaxScore;
+            Statistics.maxScorePlayer = Universe.MaxScorePlayer;
             lock(ToRender) 
             {
                 ToRender.Clear();
@@ -137,15 +157,17 @@ namespace FlappyBlazorBird.Client.Pages
             }
             
             InvokeAsync( StateHasChanged );
+            GoToSetFocus = true;
         }
 
+        private bool GoToSetFocus = false;
+        private bool GoToSetFocusAlreadySet = false;
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            if (firstRender)
+            if (GoToSetFocus && !GoToSetFocusAlreadySet)
             {
                 await JSRuntime.InvokeVoidAsync("SetFocusToElement", OuterDiv);
-                Universe.PleaseWeakUp();
-                PleaseStopSent = false;
+                GoToSetFocusAlreadySet = true;
             }
         }
 

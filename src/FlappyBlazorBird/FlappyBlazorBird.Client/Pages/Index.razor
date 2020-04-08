@@ -1,28 +1,43 @@
 ﻿@inherits IndexBase
 @using FlappyBlazorBird.Client.Data
 @page "/"
-@lock(ToRender) 
-{
-    <div class="outer-div" @ref="OuterDiv" @onkeydown="@KeyDown" tabindex="0" @onclick="@OnClick" >         
-        <div class="top-div"></div>
-        <div class="game-div">
-            @foreach (var printable in ToRender)
-            {
-                <div id="@printable.Key" @key="printable.Key" class="@printable.CssClass" style="@printable.CssStyle" draggable="false" dragstart="false;"> </div>
-            }                
-            <div class="statistics">
-                <ul>
-                    <li>players @(Statistics.totalPlayers.ToString()) fps @(Statistics.fps.ToString())</li>
-                    <li>total sessions @(Statistics.totalSessions)</li>
-                    <li>since @(Statistics.startedAt)</li>
-                    <li>Record @(Statistics.maxScore)</li>
-                </ul>
-            </div>
-        </div>
-        <div class="left-div"></div>
-        <div class="right-div"></div>
-        <div class="down-div"></div>
-    </div>
-}
 
+@if (!MyBirdIsSet)
+{
+    <div class="nickname">
+        <input type="text" maxlength="12" @bind="@birdname" />
+        <a @onclick="OnNickIsSet"  >Play</a>
+    </div>
+
+}
+else 
+{
+    @lock(ToRender) 
+    {
+        <div class="outer-div" @ref="OuterDiv" @onkeydown="@KeyDown" tabindex="0" @onclick="@OnClick" >         
+            <div class="top-div"></div>
+            <div class="game-div">
+                @foreach (var printable in ToRender)
+                {
+                    <div id="@printable.Key" @key="printable.Key" class="@printable.CssClass" style="@printable.CssStyle" draggable="false" dragstart="false;"> </div>
+                }                
+                @foreach (var gamer in Firsts)
+                {
+                    <p class="birdname" style="@gamer.CssStyle">@gamer.Name</p>
+                }                
+                <div class="statistics">
+                    <ul>
+                        <li>players @(Statistics.totalPlayers.ToString()) fps @(Statistics.fps.ToString())</li>
+                        <li>total sessions @(Statistics.totalSessions)</li>
+                        <li>since @(Statistics.startedAt)</li>
+                        <li>Record @(Statistics.maxScore) by @(Statistics.maxScorePlayer)</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="left-div"></div>
+            <div class="right-div"></div>
+            <div class="down-div"></div>
+        </div>
+    }
+}
 

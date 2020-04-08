@@ -110,6 +110,40 @@ img {
     overflow: hidden;
   }
 
+  .nickname {
+    background-color: aqua;
+    overflow: hidden;
+    position: fixed;
+    top: calc((100vh - 512px)*0.2);
+    left: calc((100vw - 288px)*0.5);
+    min-width:  288px;
+    max-width:  288px;
+    width:  288px;
+    border-radius: 25px;
+}
+
+.nickname input {
+    margin: 20px;
+    padding: 10px;
+    text-align: center; 
+    font-family: "monospace";
+    border-radius: 25px;
+    border: 2px solid orange;
+    background-color: white;
+}
+
+.nickname input:focus{
+    outline: none;
+}
+
+.nickname a {
+    cursor: pointer;
+    margin-right: 10;
+}
+
+.birdname {
+    font-family: "monospace";
+}
 .statistics {
     position: absolute;
     width: 130px;
