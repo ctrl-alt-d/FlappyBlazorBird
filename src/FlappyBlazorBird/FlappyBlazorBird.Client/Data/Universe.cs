@@ -103,7 +103,16 @@ namespace FlappyBlazorBird.Client.Data
         protected virtual void OnTic()
         {
             EventHandler<TicEventArgs> handler = Tic;
-            var e = new TicEventArgs(Players.ToList(), PrintablePiles.ToList(), this);
+            
+            var players = Players.ToList();
+            var firsts = 
+                players
+                .OrderBy(p=>-p.score)
+                .Take(5)
+                .Select(b=> new Printable(b.playerx+40, b.playery-5, name: $"{b.Name} ({b.score})", opacity: 0.5, guidKey: Guid.NewGuid())) //;Guid.Parse(b.GuidKey.ToString())))
+                .ToList();
+
+            var e = new TicEventArgs(Players.ToList(), PrintablePiles.ToList(), this, firsts);
             handler?.Invoke(this, e);
         }
         #endregion
@@ -331,10 +340,10 @@ namespace FlappyBlazorBird.Client.Data
                 var (uPipe, lPipe) = ( this.upperPipes[i], this.lowerPipes[i]);
 
                 auxListPrintable.Add(
-                    new Printable( uPipe.X, uPipe.Y, Universe.PIPES_LIST[0], -180,null,uPipe.GuidKey )
+                    new Printable( uPipe.X, uPipe.Y, Universe.PIPES_LIST[0], uPipe.Name, -180, null, uPipe.GuidKey )
                 );
                 auxListPrintable.Add(
-                    new Printable( lPipe.X, lPipe.Y, Universe.PIPES_LIST[1],null, null, lPipe.GuidKey )
+                    new Printable( lPipe.X, lPipe.Y, Universe.PIPES_LIST[1], lPipe.Name, null, null, lPipe.GuidKey )
                 );
             }            
             lock(PrintablePiles)

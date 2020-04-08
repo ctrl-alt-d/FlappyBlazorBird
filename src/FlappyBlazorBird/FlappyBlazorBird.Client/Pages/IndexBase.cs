@@ -62,9 +62,12 @@ namespace FlappyBlazorBird.Client.Pages
         }
 
         protected bool MyBirdIsSet = false;
-        protected string birdname {set; get;} = "unnamed";
+        protected string birdname {set; get;} = "";
+
         protected async Task OnNickIsSet()
         {
+            if (string.IsNullOrWhiteSpace(birdname)) return;
+            
             MyBird = new Bird(Universe);
             MyBird.Name = birdname;
 
@@ -79,6 +82,7 @@ namespace FlappyBlazorBird.Client.Pages
 
 
         protected List<Printable> ToRender = new List<Printable>();
+        protected List<Printable> Firsts = new List<Printable>();
 
         private void Render(object sender, TicEventArgs e)
         {
@@ -115,6 +119,8 @@ namespace FlappyBlazorBird.Client.Pages
                     toRender.Add(otherBird);
                 }
             }
+
+            Firsts = e.Firsts.ToList();
 
             // myBird
             var myBirdIndex = MyBird.IsDead?0:MyBird.playerIndex;

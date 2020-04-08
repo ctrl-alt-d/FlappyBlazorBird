@@ -9,14 +9,16 @@ namespace FlappyBlazorBird.Client.Data
     {
         public readonly List<Bird> Players;
         public List<Printable> PrintablePipes;
+        public List<Printable> Firsts;
 
         public readonly Universe Universe;
 
-        public TicEventArgs(List<Bird> players,  List<Printable> printablePipes, Universe universe)
+        public TicEventArgs(List<Bird> players,  List<Printable> printablePipes, Universe universe, List<Printable> firsts)
         {
             Players = players;
             Universe = universe;
             PrintablePipes = printablePipes;
+            Firsts = firsts;
         }
     }
 }
