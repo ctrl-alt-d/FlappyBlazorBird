@@ -4,8 +4,11 @@
 
 @if (!MyBirdIsSet)
 {
-    <input type="text" maxlength="12" @bind="@birdname" />
-    <a @onclick="OnNickIsSet" >Play</a>
+    <div class="nickname">
+        <input type="text" maxlength="12" @bind="@birdname" />
+        <a @onclick="OnNickIsSet"  >Play</a>
+    </div>
+
 }
 else 
 {
