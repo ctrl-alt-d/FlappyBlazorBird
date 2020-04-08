@@ -20,6 +20,7 @@ namespace FlappyBlazorBird.Client.Data
         public string StartedAt;
         public long TotalSessions = 0;
         public int MaxScore = 0;
+        public string MaxScorePlayer ="** None **";
 
         public bool IsRunning {get; protected set; }= false;
         private static object looker = new object();
@@ -109,11 +110,19 @@ namespace FlappyBlazorBird.Client.Data
                 players
                 .OrderBy(p=>-p.score)
                 .Take(5)
-                .Select(b=> new Printable(b.playerx+40, b.playery-5, name: $"{b.Name} ({b.score})", opacity: 0.5, guidKey: Guid.NewGuid())) //;Guid.Parse(b.GuidKey.ToString())))
+                .Select(b=> new Printable(b.playerx+40, b.playery-5, name: $"{b.Name} ({b.score})", opacity: 0.5, guidKey: fakeGuid(b.GuidKey) )) //;Guid.Parse(b.GuidKey.ToString())))
                 .ToList();
 
             var e = new TicEventArgs(Players.ToList(), PrintablePiles.ToList(), this, firsts);
             handler?.Invoke(this, e);
+        }
+
+        private Guid fakeGuid(Guid guidKey)
+        {
+            var s = guidKey.ToString();
+            s = s.Substring(0,s.Length-6)+ "DDDDDD";
+            var g = new Guid(s);
+            return g;
         }
         #endregion
 

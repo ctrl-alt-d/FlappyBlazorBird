@@ -141,6 +141,9 @@ img {
     margin-right: 10;
 }
 
+.birdname {
+    font-family: "monospace";
+}
 .statistics {
     position: absolute;
     width: 130px;

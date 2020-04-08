@@ -21,6 +21,7 @@ namespace FlappyBlazorBird.Client.Pages
         public string startedAt;
 
         public int maxScore ;
+        public string maxScorePlayer ="** none **";
     }
 
     public class IndexBase: ComponentBase, IDisposable
@@ -64,10 +65,10 @@ namespace FlappyBlazorBird.Client.Pages
         protected bool MyBirdIsSet = false;
         protected string birdname {set; get;} = "";
 
-        protected async Task OnNickIsSet()
+        protected void OnNickIsSet()
         {
             if (string.IsNullOrWhiteSpace(birdname)) return;
-            
+
             MyBird = new Bird(Universe);
             MyBird.Name = birdname;
 
@@ -148,6 +149,7 @@ namespace FlappyBlazorBird.Client.Pages
             Statistics.totalSessions = Universe.TotalSessions.ToString();
             Statistics.startedAt = Universe.StartedAt;
             Statistics.maxScore = Universe.MaxScore;
+            Statistics.maxScorePlayer = Universe.MaxScorePlayer;
             lock(ToRender) 
             {
                 ToRender.Clear();

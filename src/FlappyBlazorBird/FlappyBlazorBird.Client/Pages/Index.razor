@@ -23,15 +23,14 @@ else
                 }                
                 @foreach (var gamer in Firsts)
                 {
-                    <p style="@gamer.CssStyle">@gamer.Name</p>
+                    <p class="birdname" style="@gamer.CssStyle">@gamer.Name</p>
                 }                
                 <div class="statistics">
                     <ul>
                         <li>players @(Statistics.totalPlayers.ToString()) fps @(Statistics.fps.ToString())</li>
                         <li>total sessions @(Statistics.totalSessions)</li>
                         <li>since @(Statistics.startedAt)</li>
-                        <li>Record @(Statistics.maxScore)</li>
-                        <li>@MyBird.Name</li>
+                        <li>Record @(Statistics.maxScore) by @(Statistics.maxScorePlayer)</li>
                     </ul>
                 </div>
             </div>

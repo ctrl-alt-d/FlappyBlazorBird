@@ -94,7 +94,11 @@ namespace FlappyBlazorBird.Client.Data
                 if (pipeMidPos <= playerMidPos && playerMidPos < pipeMidPos + 4)
                 {
                     score += 1;
-                    if (score > Universe.MaxScore) Universe.MaxScore = score;
+                    if (score > Universe.MaxScore) 
+                    {
+                        Universe.MaxScore = score;
+                        Universe.MaxScorePlayer = this.Name;
+                    }
                     //SOUNDS['point'].play()                    
                 }
             }
