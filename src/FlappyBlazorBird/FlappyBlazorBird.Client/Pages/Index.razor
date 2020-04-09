@@ -7,8 +7,14 @@
     <div class="nickname">
         <input type="text" maxlength="12" @bind="@birdname" />
         <a @onclick="OnNickIsSet"  >Play</a>
-    </div>
 
+        <div class="disclaimer">
+            <h1>Disclaimer</h1>
+            <p>This project is just a lab to experiment with #BlazorServer. </p>
+            <p>All source project, license and credits are available at <a href="https://github.com/ctrl-alt-d/FlappyBlazorBird">github</a></p>
+            <p>Flappy Blazor Bird is (a portion) of sourabhv's FlapPyBird project transcoded to Blazor.</p>            
+        </div>
+    </div>
 }
 else 
 {

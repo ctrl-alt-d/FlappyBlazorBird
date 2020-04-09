@@ -110,13 +110,17 @@ namespace FlappyBlazorBird.Client.Pages
             // score
             toRender.AddRange( GetPrintableScore(MyBird.score) );
 
+            //
+            var otherImages = Universe.PLAYERS_LIST[1];
+            var myImage = Universe.PLAYERS_LIST[0];
+
             // other players
             foreach(var bird in e.Players)
             {
                 if (bird != MyBird)
                 {
                     var otherBirdIndex = bird.IsDead?0:bird.playerIndex;
-                    var otherBird = new Printable( bird.playerx, bird.playery,  bird.player_images[otherBirdIndex] , -bird.visibleRot, opacity: 0.5, guidKey: bird.GuidKey);
+                    var otherBird = new Printable( bird.playerx, bird.playery,  otherImages[otherBirdIndex] , -bird.visibleRot, opacity: 0.5, guidKey: bird.GuidKey);
                     toRender.Add(otherBird);
                 }
             }
@@ -125,7 +129,7 @@ namespace FlappyBlazorBird.Client.Pages
 
             // myBird
             var myBirdIndex = MyBird.IsDead?0:MyBird.playerIndex;
-            var ocell = new Printable( MyBird.playerx, MyBird.playery,  MyBird.player_images[myBirdIndex] , -MyBird.visibleRot, null, MyBird.GuidKey);
+            var ocell = new Printable( MyBird.playerx, MyBird.playery,  myImage[myBirdIndex] , -MyBird.visibleRot, null, MyBird.GuidKey);
             toRender.Add(ocell);
 
             // play again

@@ -141,6 +141,20 @@ img {
     margin-right: 10;
 }
 
+.disclaimer {
+    background-color: black;
+    border-radius: 25px;
+    margin: 20px;
+    padding: 10px;
+    text-align: center; 
+    font-family: "monospace";
+    color: chartreuse;
+}
+
+.disclaimer a {
+    color: chartreuse;
+}
+
 .birdname {
     font-family: "monospace";
 }

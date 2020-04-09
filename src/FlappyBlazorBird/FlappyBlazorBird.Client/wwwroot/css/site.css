@@ -141,6 +141,16 @@ img {
     margin-right: 10;
 }
 
+.disclaimer {
+    background-color: black;
+    border-radius: 25px;
+    margin: 20px;
+    padding: 10px;
+    text-align: center; 
+    font-family: "monospace";
+    color: green;
+}
+
 .birdname {
     font-family: "monospace";
 }
