@@ -9,6 +9,8 @@ This is just a lab 🧪.
 
 ![screenshot](./screenshots/gameover.png)
 
+Be free to make a contribution for [hacktoberfest](https://hacktoberfest.digitalocean.com) :)
+
 
 
 
