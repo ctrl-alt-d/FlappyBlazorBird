@@ -1,16 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
-    <DisableImplicitComponentsAnalyzers>true</DisableImplicitComponentsAnalyzers>
+    <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="3.2.0-preview3.20168.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="5.0.3" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\FlappyBlazorBird.Client\FlappyBlazorBird.Client.csproj" />
+    <ProjectReference Include="..\FlappyBlazorBird.ClientWasm\FlappyBlazorBird.ClientWasm.csproj" />
   </ItemGroup>
 
 
